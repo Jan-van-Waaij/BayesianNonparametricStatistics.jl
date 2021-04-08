@@ -1,0 +1,322 @@
+\ProvidesPackage{jansstylefile}
+% Package which are loaded and can be used.
+\RequirePackage[backend=biber,style=authoryear,maxnames=3,natbib, uniquename=false]{biblatex}
+\renewcommand{\cite}[2][]{\citet[#1]{#2}}
+%\renewcommand{\cite}[2][]{\parencite[#1]{#2}}
+\RequirePackage[a5paper, margin=2cm]{geometry}
+\usepackage[english]{babel}
+\RequirePackage{graphicx}
+\RequirePackage{amsmath}
+\RequirePackage[rightcaption]{sidecap}
+\RequirePackage{wrapfig}
+\RequirePackage{csquotes}
+\RequirePackage{bm} % Bold math symbols
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+\RequirePackage{mathtools}
+\RequirePackage{stmaryrd}
+\RequirePackage{multirow}
+\RequirePackage{array}
+\RequirePackage{longtable}
+\RequirePackage[all]{xy}
+%\RequirePackage{framed}
+\RequirePackage{amsthm}
+%\RequirePackage{thmtools}
+%\RequirePackage{thmbox}
+\RequirePackage{thm-restate}
+\RequirePackage{amsfonts}
+%\RequirePackage{url}
+\RequirePackage{verbatim}
+\RequirePackage{fancyhdr}
+\RequirePackage{mathrsfs}
+\RequirePackage{tikzsymbols}
+\RequirePackage{enumerate}
+\RequirePackage{float}
+%\RequirePackage[all]{xy}
+%\RequirePackage{xspace} % Magische spaties na commando's.
+\RequirePackage{color}
+\RequirePackage{multicol}
+\RequirePackage{hyperref}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=blue,  %choose some color if you want links to stand out
+    citecolor=blue,
+    urlcolor = blue,
+    }
+\usepackage{cleveref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{prior}[theorem]{Prior}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{postulate}[theorem]{Postulate}
+
+\theoremstyle{remark}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{challenge}[theorem]{Challenge}
+\newtheorem{leermomentje}[theorem]{Leermomentje}
+
+\setlength\emergencystretch{\hsize} % overflows tegengaan. 
+
+
+%% Special symbols
+
+% Special Latin letters
+\DeclareMathOperator{\A}{\mathbb{A}}
+\DeclareMathOperator{\B}{\mathbb{B}}
+\DeclareMathOperator{\C}{\mathbb{C}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\F}{\mathcal{F}}
+\DeclareMathOperator{\G}{\mathcal{G}}
+\renewcommand{\H}{\mathcal{H}}
+\DeclareMathOperator{\I}{\mathbb{I}}
+\DeclareMathOperator{\M}{\mathbb{M}}
+\DeclareMathOperator{\N}{\mathbb{N}}
+\renewcommand{\P}{\mathbb{P}}
+\DeclareMathOperator{\w}{\omega}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\re}{\mathbb{R}}
+\DeclareMathOperator{\z}{\mathbb{Z}}
+\DeclareMathOperator{\cl}{\mbox{cl}\,}
+\DeclareMathOperator{\f}{\mathbb{F}}
+\DeclareMathOperator{\T}{\mathbb{T}}
+
+% Latijnse dubbelletters 
+
+\renewcommand{\AA}{\mathbb{A}}
+\DeclareMathOperator{\BB}{\mathbb{B}}
+\DeclareMathOperator{\CC}{\mathbb{C}}
+\DeclareMathOperator{\DD}{\mathbb{D}}
+\DeclareMathOperator{\EE}{\mathbb{E}}
+\DeclareMathOperator{\FF}{\mathbb{F}}
+\DeclareMathOperator{\GG}{\mathbb{G}}
+\DeclareMathOperator{\HH}{\mathbb{H}}
+\DeclareMathOperator{\II}{\mathbb{I}}
+\DeclareMathOperator{\JJ}{\mathbb{J}}
+\DeclareMathOperator{\KK}{\mathbb{K}}
+\DeclareMathOperator{\LL}{\mathbb{L}}
+\DeclareMathOperator{\MM}{\mathbb{M}}
+\DeclareMathOperator{\NN}{\mathbb{N}}
+\DeclareMathOperator{\OO}{\mathbb{O}}
+\DeclareMathOperator{\PP}{\mathbb{P}}
+\DeclareMathOperator{\QQ}{\mathbb{Q}}
+\DeclareMathOperator{\RR}{\mathbb{R}}
+\renewcommand{\SS}{\mathbb{S}}
+\DeclareMathOperator{\TT}{\mathbb{T}}
+\DeclareMathOperator{\UU}{\mathbb{U}}
+\DeclareMathOperator{\VV}{\mathbb{V}}
+\DeclareMathOperator{\WW}{\mathbb{W}}
+\DeclareMathOperator{\XX}{\mathbb{X}}
+\DeclareMathOperator{\YY}{\mathbb{Y}}
+\DeclareMathOperator{\ZZ}{\mathbb{Z}}
+
+% Latijnse sierletters
+\DeclareMathOperator{\sA}{\mathcal{A}}
+\DeclareMathOperator{\sB}{\mathcal{B}}
+\DeclareMathOperator{\sC}{\mathcal{C}}
+\DeclareMathOperator{\sD}{\mathcal{D}}
+\DeclareMathOperator{\sE}{\mathcal{E}}
+\DeclareMathOperator{\sF}{\mathcal{F}}
+\DeclareMathOperator{\sG}{\mathcal{G}}
+\DeclareMathOperator{\sH}{\mathcal{H}}
+\DeclareMathOperator{\sI}{\mathcal{I}}
+\DeclareMathOperator{\sJ}{\mathcal{J}}
+\DeclareMathOperator{\sK}{\mathcal{K}}
+\DeclareMathOperator{\sL}{\mathcal{L}}
+\DeclareMathOperator{\sM}{\mathcal{M}}
+\DeclareMathOperator{\sN}{\mathcal{N}}
+\DeclareMathOperator{\sO}{\mathcal{O}}
+\DeclareMathOperator{\sP}{\mathcal{P}}
+\DeclareMathOperator{\sQ}{\mathcal{Q}}
+\DeclareMathOperator{\sR}{\mathcal{R}}
+\DeclareMathOperator{\sS}{\mathcal{S}}
+\DeclareMathOperator{\sT}{\mathcal{T}}
+\DeclareMathOperator{\sU}{\mathcal{U}}
+\DeclareMathOperator{\sV}{\mathcal{V}}
+\DeclareMathOperator{\sW}{\mathcal{W}}
+\DeclareMathOperator{\sX}{\mathcal{X}}
+\DeclareMathOperator{\sY}{\mathcal{Y}}
+\DeclareMathOperator{\sZ}{\mathcal{Z}}
+
+% Scr-letters
+
+% Latijnse sierletters
+\DeclareMathOperator{\scrA}{\mathscr{A}}
+\DeclareMathOperator{\scrB}{\mathscr{B}}
+\DeclareMathOperator{\scrC}{\mathscr{C}}
+\DeclareMathOperator{\scrD}{\mathscr{D}}
+\DeclareMathOperator{\scrE}{\mathscr{E}}
+\DeclareMathOperator{\scrF}{\mathscr{F}}
+\DeclareMathOperator{\scrG}{\mathscr{G}}
+\DeclareMathOperator{\scrH}{\mathscr{H}}
+\DeclareMathOperator{\scrI}{\mathscr{I}}
+\DeclareMathOperator{\scrJ}{\mathscr{J}}
+\DeclareMathOperator{\scrK}{\mathscr{K}}
+\DeclareMathOperator{\scrL}{\mathscr{L}}
+\DeclareMathOperator{\scrM}{\mathscr{M}}
+\DeclareMathOperator{\scrN}{\mathscr{N}}
+\DeclareMathOperator{\scrO}{\mathscr{O}}
+\DeclareMathOperator{\scrP}{\mathscr{P}}
+\DeclareMathOperator{\scrQ}{\mathscr{Q}}
+\DeclareMathOperator{\scrR}{\mathscr{R}}
+\DeclareMathOperator{\scrS}{\mathscr{S}}
+\DeclareMathOperator{\scrT}{\mathscr{T}}
+\DeclareMathOperator{\scrU}{\mathscr{U}}
+\DeclareMathOperator{\scrV}{\mathscr{V}}
+\DeclareMathOperator{\scrW}{\mathscr{W}}
+\DeclareMathOperator{\scrX}{\mathscr{X}}
+\DeclareMathOperator{\scrY}{\mathscr{Y}}
+\DeclareMathOperator{\scrZ}{\mathscr{Z}}
+
+% Latijnse frak letters
+
+\DeclareMathOperator{\fA}{\mathfrak{A}}
+\DeclareMathOperator{\fB}{\mathfrak{B}}
+\DeclareMathOperator{\fC}{\mathfrak{C}}
+\DeclareMathOperator{\fD}{\mathfrak{D}}
+\DeclareMathOperator{\fE}{\mathfrak{E}}
+\DeclareMathOperator{\fF}{\mathfrak{F}}
+\DeclareMathOperator{\fG}{\mathfrak{G}}
+\DeclareMathOperator{\fH}{\mathfrak{H}}
+\DeclareMathOperator{\fI}{\mathfrak{I}}
+\DeclareMathOperator{\fJ}{\mathfrak{J}}
+\DeclareMathOperator{\fK}{\mathfrak{K}}
+\DeclareMathOperator{\fL}{\mathfrak{L}}
+\DeclareMathOperator{\fM}{\mathfrak{M}}
+\DeclareMathOperator{\fN}{\mathfrak{N}}
+\DeclareMathOperator{\fO}{\mathfrak{O}}
+\DeclareMathOperator{\fP}{\mathfrak{P}}
+\DeclareMathOperator{\fQ}{\mathfrak{Q}}
+\DeclareMathOperator{\fR}{\mathfrak{R}}
+\DeclareMathOperator{\fS}{\mathfrak{S}}
+\DeclareMathOperator{\fT}{\mathfrak{T}}
+\DeclareMathOperator{\fU}{\mathfrak{U}}
+\DeclareMathOperator{\fV}{\mathfrak{V}}
+\DeclareMathOperator{\fW}{\mathfrak{W}}
+\DeclareMathOperator{\fX}{\mathfrak{X}}
+\DeclareMathOperator{\fY}{\mathfrak{Y}}
+\DeclareMathOperator{\fZ}{\mathfrak{Z}}
+
+
+
+% Special Greek letters
+
+\newcommand{\eps}{\varepsilon}
+\DeclareMathOperator{\bxi}{\bm\xi}
+\DeclareMathOperator{\bt}{\bm\theta}
+
+\newcommand{\weg}{\backslash}
+\newcommand{\leeg}{\emptyset}
+\newcommand{\q}{\mathbb{Q}}
+\newcommand{\desda}{\Leftrightarrow}
+\newcommand{\imply}{\Rightarrow}
+\renewcommand{\sp}{\mbox{Span}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\littleo}{\mathbf{o}}
+\newcommand{\var}{\mbox{Var}}
+\renewcommand{\k}{\kappa}
+
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\loc}{{\mbox{\tiny loc}}}
+\newcommand{\Mc}{\mathcal{M}_2^c}
+
+
+
+% Special math operators
+\newcommand{\rh}[1]{\left( #1 \right)}
+\newcommand{\rv}[1]{\left( #1 \right]}
+\newcommand{\vr}[1]{\left[ #1 \right)}
+\newcommand{\vh}[1]{\left[ #1 \right]}
+\newcommand{\ah}[1]{\left\{ #1 \right\}}
+\newcommand{\roh}[1]{{\color{red} \left(} #1{\color{red}\right)}}
+\DeclareMathOperator{\bibberpijltje}{\rightsquigarrow}
+\DeclareMathOperator{\barmlambda}{\bar m_\lambda}
+\DeclareMathOperator{\hatlambdan}{{\hat\lambda_n}}
+\DeclareMathOperator{\hatjn}{\hat J_n}
+\newcommand{\sigmafinite}{\(\sigma\)-finite}
+\DeclareMathOperator{\neff}{n_{\text{eff}}}
+\newcommand{\subsigmaalgebra}{sub-\(\sigma\)-algebra}
+\newcommand{\sigmaalgebra}{\(\sigma\)-algebra}
+\newcommand{\pisystem}{\(\pi\)-system}
+\DeclareMathOperator{\co}{co}
+\DeclareMathOperator{\clco}{\overline{\text{co}}}
+\DeclareMathOperator{\supp}{SUPP}
+\DeclareMathOperator{\interior}{int\,}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\snorm}[1]{\left\llbracket #1 \right\rrbracket}
+\newcommand{\expa}[1]{\exp\left\{ #1 \right\}}
+\newcommand{\Pa}[2][]{\mathbb{P}^{#1}\left[#2\right]}
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\col}[1]{\left(\begin{array}{c}#1 \end{array}\right)}
+\newcommand{\naarbovenafronden}[1]{\left\lceil #1 \right\rceil}
+\newcommand{\naarbenedenafronden}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\expb}[1]{\exp\big\{ #1 \big\}}
+\newcommand{\expB}[1]{\exp\Big\{ #1 \Big\}}
+\newcommand{\pdiff}[3]{\frac{\partial^{{#1}}{#2}}{\partial {#3}^{{#1}}}
+} % First argument: the order of derivation
+% second argument: function
+% third argument: the variable of which you take the derivative
+\newcommand{\inpr}[1]{\left\langle#1\right\rangle}
+\newcommand{\expectation}[2][]{\mathbb{E}_{ #1 }\left[ #2 \right]}
+\newcommand{\expgiv}[3][]{\mathbb{E}_{ #1 }\left.\left[ #2 \, \right|\, #3\right]}
+\DeclareMathOperator{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\six}{\quad\,\,}
+\DeclareMathOperator{\sdot}{\,\cdot\,}
+\DeclareMathOperator{\esssup}{esssup}
+\DeclareMathOperator{\essinf}{essinf}
+\DeclareMathOperator{\argmax}{arg max}
+\DeclareMathOperator{\argmin}{arg min}
+\DeclareMathOperator{\ran}{ran}
+\DeclareMathOperator{\range}{RANGE}
+\DeclareMathOperator{\RKHS}{\mathbb{H}}
+\DeclareMathOperator{\cov}{cov}
+\DeclareMathOperator{\conv}{conv}
+\DeclareMathOperator{\lik}{lik}
+\DeclareMathOperator{\io}{i.o.}
+\DeclareMathOperator{\abfo}{a.b.f.o.} % almost surely, but finitely often
+\DeclareMathOperator{\aefo}{a.e.f.o.} % almost surely, but finitely often
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rvf}{\re^{[0,\infty)}}
+\newcommand{\loga}[2][]{\prescript{#1}{}{\log\left\{#2\right\}}}
+
+\newcommand{\zwarthokje}{\renewcommand\qedsymbol{\(\blacksquare\)}}
+\DeclareMathOperator{\tr}{\text{tr}}
+
+% Remarks about the math
+
+\newcommand{\hierverder}{{\color{red} Hier verder!!}}
+
+\newcommand{\opmerking}[1]{{\color{red} #1}}
+
+\newcommand{\blabla}{\opmerking{Bla bla.}}
+
+\newcommand{\todo}{\opmerking{TO DO}}
+
+\addbibresource{Bieb.bib}
+
+\newcommand{\toprintornottoprint}{\printbibliography}
+
+\DeclareOption{nobibliography}{\renewcommand{\toprintornottoprint}{}}
+\ProcessOptions\relax
+
+
+\AtEndDocument{
+\toprintornottoprint
+}

@@ -1,0 +1,9 @@
+# Requirements for Julia 0.7 or higher. 
+
+StatsBase
+
+LinearAlgebra
+
+SparseArrays
+
+Distributions

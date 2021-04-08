@@ -1,0 +1,9 @@
+[0] Config.pm:343> INFO - This is Biber 2.5
+[1] Config.pm:346> INFO - Logfile is '/Users/janvanwaaij/Documents/Programming/Julia/BayesianNonparametricStatistics/Mathematics/.texpadtmp/math.blg'
+[75] biber-darwin:290> INFO - === Sat Dec 30, 2017, 21:48:51
+[105] Biber.pm:351> INFO - Reading '/Users/janvanwaaij/Documents/Programming/Julia/BayesianNonparametricStatistics/Mathematics/.texpadtmp/math.bcf'
+[230] Biber.pm:776> INFO - Found 0 citekeys in bib section 0
+[242] Utils.pm:149> WARN - The file '/Users/janvanwaaij/Documents/Programming/Julia/BayesianNonparametricStatistics/Mathematics/.texpadtmp/math.bcf' does not contain any citations!
+[250] bbl.pm:526> INFO - Writing '/Users/janvanwaaij/Documents/Programming/Julia/BayesianNonparametricStatistics/Mathematics/.texpadtmp/math.bbl' with encoding 'ascii'
+[250] bbl.pm:619> INFO - Output to /Users/janvanwaaij/Documents/Programming/Julia/BayesianNonparametricStatistics/Mathematics/.texpadtmp/math.bbl
+[250] Biber.pm:108> INFO - WARNINGS: 1
