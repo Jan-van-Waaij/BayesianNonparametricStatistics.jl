@@ -75,7 +75,7 @@ To recover the drift function, using Gaussian process posterior:
 
 # Wiki
 
-Go to the [Wiki](https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics/blob/master/BayesianNonparametricStatistics.jl.wiki/Home.md).
+Go to the [Wiki](https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics/blob/master/BayesianNonparametricStatistics.wiki/Home.md).
 
 # Website
 
