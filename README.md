@@ -7,7 +7,7 @@ This package works with Julia 0.6, 0.7 and any version 1.X.
 When using Julia 0.6, execute the following code: 
 
 ```julia
-Pkg.clone("https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.jl.git", "BayesianNonparametricStatistics")
+Pkg.clone("https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.git", "BayesianNonparametricStatistics")
 ```
 
 when using Julia 0.7, execute
@@ -15,12 +15,12 @@ when using Julia 0.7, execute
 
 ```julia
 using Pkg
-Pkg.clone("https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.jl.git", "BayesianNonparametricStatistics")
+Pkg.clone("https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.git", "BayesianNonparametricStatistics")
 ```
 
 In Julia 1.X press ] and copy-paste
 ```julia
-add https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.jl.git
+add https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.git
 ```
 
 ## Any problems? Contact me!
