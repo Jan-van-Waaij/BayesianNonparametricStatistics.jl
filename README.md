@@ -75,17 +75,17 @@ To recover the drift function, using Gaussian process posterior:
 
 # Wiki
 
-Go to the [Wiki](https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.jl/wiki).
+Go to the [Wiki](https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics/wiki).
 
 # Website
 
-http://jan-van-waaij.github.io/BayesianNonparametricStatistics.jl/
+http://jan-van-waaij.github.io/BayesianNonparametricStatistics/
 
 # License
 
 The BayesianNonparametricStatistics.jl package is licensed under the MIT "Expat" License:
 
-> Copyright (c) 2017-2018: Jan van Waaij.
+> Copyright (c) 2017-2021: Jan van Waaij.
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
