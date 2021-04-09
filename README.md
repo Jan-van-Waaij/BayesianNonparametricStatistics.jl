@@ -42,7 +42,7 @@ to use the package.
 Sample from an SDE dX_t=sin(2\pi X_t)dt+dW_t: 
 
 ```julia
-  using BayesianNonparametricStatistics, PyPlot
+  using BayesianNonparametricStatistics, Plots
   # implement SDE dX_t=sin(2\pi X_t)dt+dW_t, 
   # starting at zero till time 1000.0, discretised 
   # with precision 0.01.
@@ -51,7 +51,6 @@ Sample from an SDE dX_t=sin(2\pi X_t)dt+dW_t:
   # Sample from sde.
   X = rand(sde)
   # Plot X. 
-  clf()
   plot(X.timeinterval, X.samplevalues)
 ```
 
@@ -59,17 +58,17 @@ To recover the drift function, using Gaussian process posterior:
 (the code is for Julia 0.7 or 1.0. When using 0.6 leave the line "using LinearAlgebra, SparseArrays" out and replace "Diagonal" in the second line by "diagm") 
 
 ```julia
-  using LinearAlgebra, SparseArrays
+  using BayesianNonparametricStatistics, LinearAlgebra, SparseArrays, Plots
   distribution = GaussianVector(sparse(Diagonal([k^(-1.0) for k in 1.0:50.0])))
   Π = GaussianProcess([fourier(k) for k in 1:50], distribution)
   postΠ = calculateposterior(Π, X, model)
   # sample 10 times from posterior
-  clf()
+  plot()
   x = 0.0:0.01:1.0
   for k in 1:10
     f = rand(postΠ)
     y = f.(x)
-    plot(x,y)
+    plot!(x,y,show=true)
   end 
 ```
 
