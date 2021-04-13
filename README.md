@@ -20,7 +20,7 @@ Pkg.clone("https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.git"
 
 In Julia 1.X press ] and copy-paste
 ```julia
-add https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.git
+add BayesianNonparametricStatistics
 ```
 
 ## Any problems? Contact me!
