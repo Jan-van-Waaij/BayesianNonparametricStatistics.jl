@@ -1,8 +1,13 @@
-﻿BayesianNonparametricStatistics.jl is an unofficial Julia package to sample from the nonparametric posteriors. Implements Gaussian process priors, implement tools to sample from a stochastic differential equation (SDE) and to estimate the drift parameter.
+﻿BayesianNonparametricStatistics.jl is a Julia package to sample from nonparametric posteriors with data from a diffusion process (SDE). You can simulate SDEs, simulate Gaussian processes, calculate the posterior associated with diffusion process and a Gaussian process prior. 
 
 # Installation:
 
 This package works with Julia 0.6, 0.7 and any version 1.X.
+
+When you use any version of Julia 1 press ] and copy-paste
+```julia
+add BayesianNonparametricStatistics
+```
 
 When using Julia 0.6, execute the following code: 
 
@@ -16,11 +21,6 @@ when using Julia 0.7, execute
 ```julia
 using Pkg
 Pkg.clone("https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.git", "BayesianNonparametricStatistics")
-```
-
-In Julia 1.X press ] and copy-paste
-```julia
-add BayesianNonparametricStatistics
 ```
 
 ## Any problems? Contact me!
