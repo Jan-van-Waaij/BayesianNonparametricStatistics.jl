@@ -8,6 +8,11 @@ When you use any version of Julia 1 press ] and copy-paste
 ```julia
 add BayesianNonparametricStatistics
 ```
+alternatively you can use 
+```julia
+using Pkg
+Pkg.add("BayesianNonparametricStatistics")
+```
 
 When using Julia 0.6, execute the following code: 
 
