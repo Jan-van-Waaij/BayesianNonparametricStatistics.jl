@@ -12,7 +12,7 @@ add BayesianNonparametricStatistics
 When using Julia 0.6, execute the following code: 
 
 ```julia
-Pkg.clone("https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.git", "BayesianNonparametricStatistics")
+Pkg.clone("https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.jl.git", "BayesianNonparametricStatistics")
 ```
 
 when using Julia 0.7, execute
@@ -20,7 +20,7 @@ when using Julia 0.7, execute
 
 ```julia
 using Pkg
-Pkg.clone("https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.git", "BayesianNonparametricStatistics")
+Pkg.clone("https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.jl.git", "BayesianNonparametricStatistics")
 ```
 
 ## Any problems? Contact me!
@@ -78,7 +78,7 @@ Go to the [Wiki](https://github.com/Jan-van-Waaij/BayesianNonparametricStatistic
 
 # Website
 
-https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics
+https://github.com/Jan-van-Waaij/BayesianNonparametricStatistics.jl.git
 
 # License
 
