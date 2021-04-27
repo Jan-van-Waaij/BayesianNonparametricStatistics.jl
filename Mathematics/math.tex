@@ -1,12 +1,15 @@
 \documentclass[12pt]{article}
 \usepackage{jansstylefile} % The option nobibliography does not print the bibliography. But bibliography can still be used. 
 
+\title{Posterior distribution}
+\author{Jan van Waaij}
+
 \begin{document}
 
 \section{Distribution of the posterior of a finite basis expansion with Gaussian coefficients}
 
-\begin{lemma}
-	Let \(X^T=\set{X_t:t\in[0,T]}\) be an observation of 
+\begin{lemma}\label{lem:posteriordistribution}
+	Let \(X^T=\rh{X_t:t\in[0,T]}\) be an observation of 
 	\begin{align*}
 		dX_t=b(X_t)dt+\sigma(X_t)dW_t,
 	\end{align*}
@@ -14,24 +17,27 @@
 	\[
 	b=\sum_{j=1}^k\theta_j\phi_j,
 	\]
-	where \(\set{\phi_1,\ldots,\phi_k}\) is a linearly independent basis, and \(\theta=(\theta_1,\ldots,\theta_k)^t\) has multivariate normal distribution \(N(\mu,\Sigma)\) and \(\sigma\) is a positive measurable function. Then the  posterior distribution of \(\theta\) is \(N(\hat\mu,\hat\Sigma)\), where \[\hat\mu=(S+\Sigma^{-1})^{-1}(m+\Sigma^{-1}\mu),\quad\hat\Sigma= (S+\Sigma^{-1})^{-1}\] and the vector \(m=(m_1,\ldots,m_k)^t\) is defined by 
+	where \(\set{\phi_1,\ldots,\phi_k}\) is a linearly independent basis, and \(\theta=(\theta_1,\ldots,\theta_k)^t\) has multivariate normal distribution \(N(\mu,\Sigma)\), with mean vector $\mu$ and positive definite matrix $\Sigma$, and \(\sigma:\re\to \re_{>0}\) is a  measurable function. Then the  posterior distribution of \(\theta\) given $X^T$ is \(N(\hat\mu,\hat\Sigma)\), where \[\hat\mu=(S+\Sigma^{-1})^{-1}(m+\Sigma^{-1}\mu),\quad\hat\Sigma= (S+\Sigma^{-1})^{-1}\] and the vector \(m=(m_1,\ldots,m_k)^t\) is defined by 
 	\[
 	m_l=\int_0^T\frac{\phi_l(X_t)}{\sigma(X_t)^2}dX_t, \quad l=1,\ldots,k,
 	\] 
 	and the symmetric \(k\times k\)-matrix \(S\) is given by 
-	\[
+	\begin{equation}\label{eq:girsanovmatrix}
 	S_{l,l'}=\int_0^T\frac{\phi_l(X_t)\phi_{l'}(X_t)}{\sigma^2(X_t)}dt,\quad l,l'=1,\ldots,k,
-	\]
+	\end{equation}
 	provided \(S+\Sigma^{-1}\) is invertible. 
-	Moreover the marginal likelihood is given by 
+	Moreover, the marginal likelihood is given by 
 	\[
-\int p(X^T\mid \theta)p(\theta)d\theta=	|\Sigma\hat\Sigma^{-1}|^{-1/2}e^{-\frac12\mu^t\Sigma^{-1}\mu} e^{\frac12\hat\mu^t\hat\Sigma^{-1}\hat\mu}
+\int p(X^T\mid \theta)p(\theta)d\theta=	|\Sigma^{-1}\hat\Sigma|^{1/2}e^{-\frac12\mu^t\Sigma^{-1}\mu} e^{\frac12\hat\mu^t\hat\Sigma^{-1}\hat\mu}.
 	\]
 	
 \end{lemma}
-\begin{proof}Almost surely we have by Girsanov's theorem\begin{equation}\label{eq:girsanov}
+\begin{proof}Almost surely we have by Girsanov's theorem (e.g. \cite[chapter 13]{steele2001} or \cite[section 9.4]{ChungWilliams2014}) \begin{equation}\label{eq:girsanov}
 p(X^T\mid \theta)=\exp\left(\int_0^T\frac{b(X_t)}{\sigma(X_t)^2}dX_t-\frac12\int_0^T\rh{\frac{b(X_t)}{\sigma(X_t)}}^2dt\right),
-\end{equation}with respect to the Wiener measure. So \(\log p(X^T\mid b)=\theta^tm - \frac 1 2 \theta^t S\theta\). And the log of the distribution of \(\theta\) with respect to the Lebesgue measure on \(\re^k\) is given by
+\end{equation}with respect to the Wiener measure. So \begin{equation}\label{eq:loglikelihoodintermsofmandS}
+\log p(X^T\mid b)=\theta^tm - \frac 1 2 \theta^t S\theta
+\end{equation}
+ and the log of the distribution of \(\theta\) with respect to the Lebesgue measure on \(\re^k\) is given by
 \begin{align*}
 	\log p(\theta)= &-\frac k2\log(2\pi) - \frac12 \log|\Sigma|  - \frac 1 2 (\theta-\mu)^t\Sigma^{-1}(\theta-\mu) \\
 	= &C_1 - \frac 1 2 \theta\Sigma^{-1}\theta +\theta^t\Sigma^{-1}\mu,
@@ -50,8 +56,8 @@ So, %by the Bayes formula, for some constant \(C_3\), the posterior density of \
 
 By the Bayes formula, the posterior density of \(\theta\) is proportional to \(p(X^T\mid\theta)p(\theta)\). It follows that  \(\theta\mid X^T\) is normally distributed with mean 
 \[\hat\mu :=( S + \Sigma^{-1} )^{-1} (m + \Sigma^{-1}\mu).\]
- and covariance matrix \[\hat\Sigma:=(S+\Sigma^{-1})^{-1}.\]
- 
+ and covariance matrix \[\hat\Sigma:=(S+\Sigma^{-1})^{-1},\]
+provided $S+\Sigma^{-1}$ is invertible.  
  Moreover 
  \begin{align*}
  &\int  p(X^T\mid\theta)p(\theta)d\theta \\
@@ -59,14 +65,14 @@ By the Bayes formula, the posterior density of \(\theta\) is proportional to \(p
  = & (2\pi)^{k/2}| \hat\Sigma|^{1/2}e^{\frac12\hat\mu^t\hat\Sigma^{-1}\hat\mu}e^{C_1}\\
  &\times \int (2\pi)^{-k/2}|\hat\Sigma|^{-1/2}e^{\theta^t\hat\Sigma^{-1}\hat\mu } e^{-\frac12\theta^t \hat\Sigma^{-1} \theta} e^{-\frac12\hat\mu^t\hat\Sigma^{-1}\hat\mu}d\theta\\
  = & (2\pi)^{k/2}|\hat\Sigma|^{1/2}e^{\frac12\hat\mu^t\hat\Sigma^{-1}\hat\mu}e^{C_1}\\
- = & |\Sigma\hat\Sigma^{-1}|^{-1/2}e^{-\frac12\mu^t\Sigma^{-1}\mu} e^{\frac12\hat\mu^t\hat\Sigma^{-1}\hat\mu}.
+ = & |\Sigma^{-1}\hat\Sigma|^{1/2}e^{-\frac12\mu^t\Sigma^{-1}\mu} e^{\frac12\hat\mu^t\hat\Sigma^{-1}\hat\mu},
  \end{align*}
- using that the integrant is a probability distribution.
+ using that the integrant in the third last line is the density of a multivariate normal distribution and therefore integrates to one.
 \end{proof}
 
 \section{The marginal maximum likelihood estimator}
 
-Suppose we have prior \(\theta\sim N(0,\Sigma_\lambda)\), where \(\Sigma_\lambda=\lambda^2\Sigma \). Note that 
+Suppose we have prior \(\theta\sim N(\mu,\Sigma_\lambda)\), where \(\Sigma_\lambda=\lambda^2\Sigma \). Note that 
   \[
 \Sigma_\lambda \hat \Sigma_\lambda ^{-1} = \Sigma_\lambda (S+\Sigma_\lambda ^{-1})= \Sigma_\lambda  S + \II_k=\lambda^2\Sigma  S + \II_k
 \]
@@ -75,17 +81,19 @@ and\[
 \]
 
 So 
-\begin{align*}
+\begin{equation}\label{eq:marginallikelihood}
+\begin{split}
 &\log \int  p(X^T\mid\theta)p(\theta)d\theta \\
-= & \log|\lambda^2 \Sigma S + \II_k| + \frac12 m^t (S+\lambda^{-2}\Sigma^{-1})^{-1}m. 
-\end{align*}
+= & -\frac12\log|\lambda^2 \Sigma S + \II_k| -\frac1{2\lambda^2}\mu^t\Sigma^{-1}\mu    + \frac12 m^t (S+\lambda^{-2}\Sigma^{-1})^{-1}m. 
+\end{split}
+\end{equation}
 
 
 
 
 
 \begin{lemma}
-	Let \(X^T=\set{X_t:t\in[0,T]}\) be an observation of 
+	Let \(X^T=\rh{X_t:t\in[0,T]}\) be an observation of 
 	\begin{align*}
 	dX_t=b(X_t)dt+\sigma(X_t)dW_t,
 	\end{align*}
@@ -101,17 +109,18 @@ So
 	\] 
 \end{lemma}
 \begin{proof}
-	Let where the vector \(m=(m_1,\ldots,m_k)^t\) is defined by 
-	\[
-	m_l=\int_0^T\frac{\phi_l(X_t)}{\sigma(X_t)^2}dX_t, \quad l=1,\ldots,k,
-	\] 
-	and the symmetric \(k\times k\)-matrix \(S\) is given by 
-	\[
-	S_{l,l'}=\int_0^T\frac{\phi_l(X_t)\phi_{l'}(X_t)}{\sigma^2(X_t)}dt,\quad l,l'=1,\ldots,k.
-	\]
-	Almost surely we have by Girsanov's theorem\begin{equation}\label{eq:girsanov}
-	p(X^T\mid b)=\exp\left(\int_0^T\frac{b(X_t)}{\sigma(X_t)^2}dX_t-\frac12\int_0^T\rh{\frac{b(X_t)}{\sigma(X_t)}}^2dt\right),
-	\end{equation}with respect to the Wiener measure. So \(\log p(X^T\mid b)=\theta^tm - \frac 1 2 \theta^t S\theta\). And the logarithm of the distribution of \(\theta\) given \(\lambda\) with respect to the Lebesgue measure on \(\re^k\) is given by (proportionality w.r.t. \(\lambda\)),
+%	Let where the vector \(m=(m_1,\ldots,m_k)^t\) is defined by 
+%	\[
+%	m_l=\int_0^T\frac{\phi_l(X_t)}{\sigma(X_t)^2}dX_t, \quad l=1,\ldots,k,
+%	\] 
+%	and the symmetric \(k\times k\)-matrix \(S\) is given by 
+%	\[
+%	S_{l,l'}=\int_0^T\frac{\phi_l(X_t)\phi_{l'}(X_t)}{\sigma^2(X_t)}dt,\quad l,l'=1,\ldots,k.
+%	\]
+%	Almost surely we have by Girsanov's theorem\begin{equation}\label{eq:girsanov}
+%	p(X^T\mid b)=\exp\left(\int_0^T\frac{b(X_t)}{\sigma(X_t)^2}dX_t-\frac12\int_0^T\rh{\frac{b(X_t)}{\sigma(X_t)}}^2dt\right),
+%	\end{equation}with respect to the Wiener measure. 
+Recall \cref{eq:loglikelihoodintermsofmandS}, \(\log p(X^T\mid b)=\theta^tm - \frac 1 2 \theta^t S\theta\). The logarithm of the distribution of \(\theta\) given \(\lambda\) with respect to the Lebesgue measure on \(\re^k\) is given by (proportionality w.r.t. \(\lambda\)),
 	\begin{align*}
 	\log p(\theta\mid \lambda)= &C_1 -k\log \lambda - \frac 1 2 \lambda^{-2}(\theta-\mu)^t\Sigma^{-1}(\theta-\mu). 
 	\end{align*}
@@ -128,23 +137,50 @@ So
 		= & C + \theta^tm - \frac 1 2\theta^t S\theta\\
 		& -k\log \lambda - \frac12 \lambda^{-2}(\theta-\mu)^t\Sigma^{-1}(\theta-\mu)\\
 		&-(A+1)\log(\lambda^2) - \frac B{\lambda^2}\\
-		= &\tilde{C} -(A+k/2+1)\log(\lambda^2) - \frac {B+ \frac12 (\theta-\mu)^t\Sigma^{-1}(\theta-\mu)}{\lambda^2}.
+		= &\tilde{C} -(A+k/2+1)\log(\lambda^2) - \frac {B+ \frac12 (\theta-\mu)^t\Sigma^{-1}(\theta-\mu)}{\lambda^2};
 	\end{align*}
-	Which is the logarithm of the density of the inverse gamma distribution with shape parameter \(A+k/2\) and scale parameter \(B+ \frac12 (\theta-\mu)^t\Sigma^{-1}(\theta-\mu)\).
+	which is up to an additive constant the logarithm of the density of the inverse gamma distribution with shape parameter \(A+k/2\) and scale parameter \(B+ \frac12 (\theta-\mu)^t\Sigma^{-1}(\theta-\mu)\).
 \end{proof}
 
 \begin{lemma}
-	We have \[
-	p(X^T\mid j,\lambda^2)= \frac{\expa{\frac12 m^T \rh{S+(\lambda^2 \Sigma)^{-1}}^{-1}m}}{\sqrt{\det\rh{\lambda^2\rh{S+(\lambda^2 \Sigma)^{-1}}\Sigma}}}.
-	\]
+	We have \begin{align*}
+	\log p(X^T\mid j,\lambda^2)=& -\frac12\log|\lambda^2 \Sigma S + \II_k| \\
+	 & -\frac1{2\lambda^2}\mu^t\Sigma^{-1}\mu    + \frac12 m^t (S+\lambda^{-2}\Sigma^{-1})^{-1}m.
+	\end{align*}
 \end{lemma}
 \begin{proof}
 	This follows from \[
-	p(X^T\mid j,\lambda^2 ) = \int p(X^T\mid j,\theta^j,\lambda^2)p(\theta^j\mid j, \lambda)d\theta^j.
+	p(X^T\mid j,\lambda^2 ) = \int p(X^T\mid j,\theta^j,\lambda^2)p(\theta^j\mid j, \lambda)d\theta^j
 	\]
+	and \cref{eq:marginallikelihood}. 
 \end{proof}
 \section{Number of dependent Faber-Schauder functions with higher or equal index}
 
+The Faber-Schauder basis functions $\psi_0, \psi_{j,k}$ are defined as follows: \begin{align*}
+\psi_0(x)=&\begin{cases}
+    1-2x & \text{ when } x\in[0,1/2),\\
+    2x-1 & \text{ when } x\in[1/2,1],\\
+    0 & \text{ otherwise,} 
+\end{cases}\\
+\Lambda(x) = & \begin{cases}
+    2x & \text{ when }x\in[0,1/2),\\
+    2(1-x) & \text{ when } x\in [1/2,1],\\
+    0 & \text{ otherwise,}
+\end{cases} 
+\intertext{and}
+\psi_{j,k} (x) = &  \Lambda(2^jx-k+1), \quad j=0,1,\ldots, k=1,\ldots,2^j,
+\end{align*}
+see \cite[p. 607]{meulenschauerwaaij2017}. 
+In this question we establish that the Girsanov matrix $S$, defined by \cref{eq:girsanovmatrix} with the Faber-Schauder matrix is sparse. 
+
+\begin{definition}
+Let for each $n$, $M^n$ a $n\times n$ matrix. 
+The sequence $(M^n)_{n\ge 1}$ is sparse when the number of nonzero entries of $M^n$ divided by $n^2$ converges to zero.  
+\end{definition}
+Informally this means that almost all entries of $M^n$ are zero. 
+
+Note that $S_{l,l'}=0$ when $\supp(\Psi_l)\cap\supp(\Psi_{l'})$ has Lebesgue measure zero. 
+\hierverder
 Note that for level \(j\ge 1\), \(\psi_{j,k}\) and \(\psi_{j,l}\) are only dependent when \(k=l\) (obviously, then they are equal). 
 
 Note that \(\psi_1\) and \(\psi_{0,1}\) are dependent, both of level 0. 
