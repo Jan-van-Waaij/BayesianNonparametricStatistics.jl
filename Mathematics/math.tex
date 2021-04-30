@@ -48,7 +48,7 @@ p(X^T\mid \theta)=\exp\left(\int_0^T\frac{b(X_t)}{\sigma(X_t)^2}dX_t-\frac12\int
 
 So, %by the Bayes formula, for some constant \(C_3\), the posterior density of \(\theta\) is given by
 \begin{align*}
-	\log[ p(X^T\mid \theta)p(\theta)] = & C_1 + \theta^tm - \frac 1 2 \theta^t S\theta - \frac 1 2 \theta\Sigma^{-1}\theta +\theta^t\Sigma^{-1}\mu\\
+	\log( p(X^T\mid \theta)p(\theta)) = & C_1 + \theta^tm - \frac 1 2 \theta^t S\theta - \frac 1 2 \theta\Sigma^{-1}\theta +\theta^t\Sigma^{-1}\mu\\
 	= & C_1 + \theta^t ( m + \Sigma^{-1} \mu ) - \frac 1 2 \theta^t (S+\Sigma^{-1}) \theta\\
 	= & C_1 + \theta^t ( S + \Sigma^{-1} )  \Big  ( ( S + \Sigma^{-1} )^{-1} (m + \Sigma^{-1}\mu )\Big) \\
 	&\quad- \frac 1 2 \theta^t (S+\Sigma^{-1}) \theta. 
@@ -72,25 +72,30 @@ provided $S+\Sigma^{-1}$ is invertible.
 
 \section{The marginal maximum likelihood estimator}
 
-Suppose we have prior \(\theta\sim N(\mu,\Sigma_\lambda)\), where \(\Sigma_\lambda=\lambda^2\Sigma \). Note that 
-  \[
-\Sigma_\lambda \hat \Sigma_\lambda ^{-1} = \Sigma_\lambda (S+\Sigma_\lambda ^{-1})= \Sigma_\lambda  S + \II_k=\lambda^2\Sigma  S + \II_k
-\]
-and\[
-\hat \mu^t \hat\Sigma_\lambda^{-1} \hat\mu = m^t (S+\Sigma_\lambda^{-1})^{-1}m= m^t (S+\lambda^{-2}\Sigma^{-1})^{-1}m. 
-\]
-
-So 
+\begin{lemma}\label{lem:marginallikelihood}
+Let $\lambda>0$, $\mu\in\re^k$ and let $\Sigma$ be a positive definite $k\x k$-matrix. Consider the prior \(\theta\sim N(\mu,\Sigma_\lambda)\), where \(\Sigma_\lambda=\lambda^2\Sigma \) and denote its density by $p_\lambda$. Then 
 \begin{equation}\label{eq:marginallikelihood}
 \begin{split}
-&\log \int  p(X^T\mid\theta)p(\theta)d\theta \\
-= & -\frac12\log|\lambda^2 \Sigma S + \II_k| -\frac1{2\lambda^2}\mu^t\Sigma^{-1}\mu    + \frac12 m^t (S+\lambda^{-2}\Sigma^{-1})^{-1}m. 
+  &\log \int  p_\lambda(X^T\mid\theta)p_\lambda(\theta)d\theta  \\= &-\frac12\log |\lambda^2\Sigma  S + \II_k|  -\frac12\mu^t\Sigma^{-1}\mu+ \frac12(m + \lambda^{-2}\Sigma^{-1}\mu)^t ( S + \lambda^{-2}\Sigma^{-1} )^{-1} (m + \lambda^{-2}\Sigma^{-1}\mu).
 \end{split}
 \end{equation}
 
+\end{lemma}
+\begin{proof}It follows from \cref{lem:posteriordistribution} that 
+  \[
+\Sigma_\lambda \hat \Sigma_\lambda ^{-1} = \Sigma_\lambda (S+\Sigma_\lambda ^{-1})= \Sigma_\lambda  S + \II_k=\lambda^2\Sigma  S + \II_k
+\]
+and\begin{align*}
+\hat \mu^t \hat\Sigma_\lambda^{-1} \hat\mu =&  (m + \Sigma_\lambda^{-1}\mu)^t( S + \Sigma_\lambda^{-1} )^{-1}( S + \Sigma_\lambda^{-1} )( S + \Sigma_\lambda^{-1} )^{-1} (m + \Sigma_\lambda^{-1}\mu)\\
+=&  (m + \lambda^{-2}\Sigma^{-1}\mu)^t ( S + \lambda^{-2}\Sigma^{-1} )^{-1} (m + \lambda^{-2}\Sigma^{-1}\mu). 
+\end{align*}
+So it follows from the same lemma that 
+\begin{align*}
+    &\log \int  p_\lambda(X^T\mid\theta)p_\lambda(\theta)d\theta  \\= &-\frac12\log |\lambda^2\Sigma  S + \II_k|  -\frac12\mu^t\Sigma^{-1}\mu+ \frac12(m + \lambda^{-2}\Sigma^{-1}\mu)^t ( S + \lambda^{-2}\Sigma^{-1} )^{-1} (m + \lambda^{-2}\Sigma^{-1}\mu).
+\end{align*}
+\end{proof}
 
-
-
+\section{Random scaling}
 
 \begin{lemma}
 	Let \(X^T=\rh{X_t:t\in[0,T]}\) be an observation of 
@@ -137,24 +142,25 @@ Recall \cref{eq:loglikelihoodintermsofmandS}, \(\log p(X^T\mid b)=\theta^tm - \f
 		= & C + \theta^tm - \frac 1 2\theta^t S\theta\\
 		& -k\log \lambda - \frac12 \lambda^{-2}(\theta-\mu)^t\Sigma^{-1}(\theta-\mu)\\
 		&-(A+1)\log(\lambda^2) - \frac B{\lambda^2}\\
-		= &\tilde{C} -(A+k/2+1)\log(\lambda^2) - \frac {B+ \frac12 (\theta-\mu)^t\Sigma^{-1}(\theta-\mu)}{\lambda^2};
+		= &\tilde{C} -(A+k/2+1)\log(\lambda^2) - \frac {B+ \frac12 (\theta-\mu)^t\Sigma^{-1}(\theta-\mu)}{\lambda^2},
 	\end{align*}
 	which is up to an additive constant the logarithm of the density of the inverse gamma distribution with shape parameter \(A+k/2\) and scale parameter \(B+ \frac12 (\theta-\mu)^t\Sigma^{-1}(\theta-\mu)\).
 \end{proof}
 
 \begin{lemma}
 	We have \begin{align*}
-	\log p(X^T\mid j,\lambda^2)=& -\frac12\log|\lambda^2 \Sigma S + \II_k| \\
-	 & -\frac1{2\lambda^2}\mu^t\Sigma^{-1}\mu    + \frac12 m^t (S+\lambda^{-2}\Sigma^{-1})^{-1}m.
+	&\log p(X^T\mid j,\lambda^2)\\
+	=&-\frac12\log |\lambda^2\Sigma  S + \II_k|  -\frac12\mu^t\Sigma^{-1}\mu+ \frac12(m + \lambda^{-2}\Sigma^{-1}\mu)^t ( S + \lambda^{-2}\Sigma^{-1} )^{-1} (m + \lambda^{-2}\Sigma^{-1}\mu).
 	\end{align*}
 \end{lemma}
 \begin{proof}
 	This follows from \[
 	p(X^T\mid j,\lambda^2 ) = \int p(X^T\mid j,\theta^j,\lambda^2)p(\theta^j\mid j, \lambda)d\theta^j
 	\]
-	and \cref{eq:marginallikelihood}. 
+	and \cref{lem:marginallikelihood}. 
 \end{proof}
-\section{Number of dependent Faber-Schauder functions with higher or equal index}
+
+\section{The sparsity of the Girsanov matrix with Faber-Schauder functions}
 
 The Faber-Schauder basis functions $\psi_0, \psi_{j,k}$ are defined as follows: \begin{align*}
 \psi_0(x)=&\begin{cases}
@@ -170,69 +176,122 @@ The Faber-Schauder basis functions $\psi_0, \psi_{j,k}$ are defined as follows: 
 \intertext{and}
 \psi_{j,k} (x) = &  \Lambda(2^jx-k+1), \quad j=0,1,\ldots, k=1,\ldots,2^j,
 \end{align*}
-see \cite[p. 607]{meulenschauerwaaij2017}. 
-In this question we establish that the Girsanov matrix $S$, defined by \cref{eq:girsanovmatrix} with the Faber-Schauder matrix is sparse. 
+see \cite[p. 607]{meulenschauerwaaij2018}. We say that $\psi_0$ and $\psi_{0,1}$ are of level zero, and the basis functions $\psi_{j,1},\ldots,\psi_{j,2^j}$ are said to be of level $j$. The Girsanov matrix $S$ defined in \cref{eq:girsanovmatrix} with all basis function up to and including level $J$ is denoted by $S^J$. Note that $S^J$ has $2+\sum_{j=1}^J2^j=2^{J+1}$ rows and columns, and $2^{2J+2}$ entries. 
 
 \begin{definition}
-Let for each $n$, $M^n$ a $n\times n$ matrix. 
-The sequence $(M^n)_{n\ge 1}$ is sparse when the number of nonzero entries of $M^n$ divided by $n^2$ converges to zero.  
+Let $M^n$ be an $n\times n$-matrix, and let $nz(M^n)$ the number of non-zero entries of $M^n$.
+The level of sparsity of $M^n$ is the fraction of nonzero entries, $\frac{nz(M^n)}{n^2}$. 
 \end{definition}
-Informally this means that almost all entries of $M^n$ are zero. 
 
-Note that $S_{l,l'}=0$ when $\supp(\Psi_l)\cap\supp(\Psi_{l'})$ has Lebesgue measure zero. 
-\hierverder
-Note that for level \(j\ge 1\), \(\psi_{j,k}\) and \(\psi_{j,l}\) are only dependent when \(k=l\) (obviously, then they are equal). 
+The definition of a sparse matrix is vague. Usually, we mean that the number of nonzero entries grows at most linear with the number of rows. We will establish that for $S^n$, the number of nonzero entries grows at most like $r\log r$ with $r$ the number of rows. 
 
-Note that \(\psi_1\) and \(\psi_{0,1}\) are dependent, both of level 0. 
+Recall the definition of $S_{l,l'}$ in \cref{lem:marginallikelihood}.
+Note that $S_{l,l'}=0$  when $\supp(\psi_l)\cap\supp(\psi_{l'})$ has Lebesgue measure zero. We say that $\psi_l$ and $\psi_{l'}$ have non-overlapping support when their supports are either disjoint or only share a boundary point; otherwise, we say they have overlapping support. 
 
-When \(d\ge 1\), then there are \(2^d\) Faber functions of level \(j+d\) that are dependent with \(\psi_{j,k}\), \(j\ge 0\). These are 
+%Note that for level \(j\ge 1\), \(\psi_{j,k}\) and \(\psi_{j,l}\) have non-overlapping support when \(k=l\) (obviously, then they are equal). 
+
+Note that both functions of level zero,  \(\psi_1\) and \(\psi_{0,1}\), have the same support $[0,1]$. 
+
+When $j\ge 0, d\ge 0$ and $d+j\ge 1$, there are \(2^d\) Faber functions of level \(j+d\) that have overlapping support with \(\psi_{j,k}\), \(j\ge 0\). These are 
 \[
 \psi_{j+d,(k-1)2^d+1},\psi_{j+d,(k-1)2^d+2},\ldots,\psi_{j+d,k2^d}
 \]
+For level 0, there are exactly two, and for level $1,\ldots,j-1$ there is precisely one basis function with overlapping support with $\psi_{j,k}$. 
 
-Every Faber-Schauder function is obviously dependent with itself. 
-
-Indexing with \(i=2^j+k\), when \(\psi_{j,k}\) has index \((j,k)\) (excluding \(i=1\)), we see that, when \(j\ge 0\), \(\psi_i\) is dependent with \(2^{j'-j}\), functions \(\psi_{j',k'}\), \(i'=2^{j'}+k'\ge i\) of level \(j'\ge j\)  (including itself, when \(j'=j\)).
-
-So if \(J\) is the higest level, \(\psi_i\) is dependent with 
-\[
-\sum_{d=0}^{J-j}2^d=2^{J-j+1}-1.
-\]
-Faber-Schauder functions \(\psi_{i'}\) with index \(i'\ge i\). 
-Hence summing over all levels \(0,\ldots,J\) and indices within a level, the number of combinations of functions \((\psi_{j,k},\psi_{j',k'}),0\le j,j'\le J\) and  \(i=2^j+k\le 2^{j'}+k'=i'\) which are dependent is
-\begin{align*}
-\sum_{j=0}^J\sum_{k=1}^{2^j}(2^{J-j+1}-1)\\
-=\sum_{j=0}^J(2^{J+1}-2^j)\\
-=(J+1)2^{J+1}-(2^{J+1}-1)\\
-=J2^{J+1}+1. 
+So for $\psi_0$ and $\psi_{0,1}$ there are \begin{align*}
+    2 + \sum_{d=1}^J 2^d = 2^{J+1} 
 \end{align*}
+basis functions $\psi_0,\psi_{j',k'}, j'\le J$ with overlapping support. 
+For $\psi_{j,k}$, $j\ge 1$,  there are \begin{align*}
+    2+ j-1 + \sum_{d=0}^{J-j} 2^d = %j+1 + 2^{J-j+1}-1=
+    j+2^{J-j+1}
+\end{align*}
+basis functions $\psi_0,\psi_{j',k'}, j'\le J$, with overlapping support. When we make use of \cref{lem:sumjtwotothepowerj}, we see that $S^n$ has at most \begin{align*}
+   &2\cdot 2^{J+1}+\sum_{ j=1}^J 2^j\rh{j+2^{J-j+1}}\\
+= & 2\cdot 2^{J+1}+ (J-1)2^{J+1} + 2 + J2^{J+1}  \\
+= & (2J+1)2^{J+1}+2
+   %= 2^{J+1}+2^{J+1} + \sum_{ j=1}^J j2^j + J2^{J+1}\\ 
+\end{align*}
+nonzero entries. 
 
-The Faber-Schauder function \(\psi_1\) is dependent with every Faber-Schauder function (including itself) up to and including level \(J\), which counts for \(2^{J+1}\) Faber-Schauder functions with a higher index or equal index, up to level \(J\). 
-
-In total we have 
-
+%Note that level zero has 2 basis functions, and level $j$, $j\ge 1$ has $2^j$ basis functions. In total there are \[
+%2+ \sum_{j=1}^J2^j=%1+2^{J+1}-1=
+%2^{J+1}
+%\]
+%basisfunctions. Hence, $S^J$ is a $2^{J+1}\x 2^{J+1}$-matrix with $2^{2J+2}$ entries. 
+So the number of nonzero entries of $S^n$ grows at most like $r\log r$ with $r$ the number of rows. It has level of sparsity at most
 \[
-J2^{J+1}+1+2^{J+1}=(J+1)2^{J+1}+1. 
+\frac{(2J+1)2^{J+1}+2
+}{2^{2J+2}}= (2J+1)2^{-J-1}+2^{-2J-1},
 \]
-Faber-Schauder functions up to level \(J\) dependent with a Faber-Schauder function with equal (itself) or higher index. 
+which is of the order $\frac r {\log r}$. 
+\appendix
 
+\section{Lemma}
 
-If we only consider dependent pairs \((\psi_i,\psi_{i'})\) with \(i'>i\), then we have 
-\[
-J2^{J+1}+1
-\]
-of such pairs (minus all \(2^{J+1}\) diagonal pairs \((\psi_i,\psi_i)\)).
-
-Hence, by symmetry, there are in total \(J2^{J+1}+1+J2^{J+1}+1+2^{J+1}=(2J+1)2^{J+1}+2\) pairs \((\psi_i,\psi_{i'})\) that are dependent.
-
-\begin{lemma}
-	The Girsanov covariantie matrix is sparse.
+\begin{lemma}\label{lem:sumjtwotothepowerj}
+   For each $J\in \NN$,  \[
+    \sum_{j=1}^Jj2^j=(J-1)2^{J+1} + 2. 
+    \]
 \end{lemma}
 \begin{proof}
-	At most \((2J+1)2^{J+1}+2\) entries of the \(2^{J+1}\times 2^{J+1}\)-matrix (\(2^{2J+2}\) entries) are nonzero. The fraction of nonzero elements is at most
-	\[
-	\frac{(2J+1)2^{J+1}+2}{2^{2J+2}}=(2J+1)2^{-J-1}+2^{-2J-1},
-	\]
-	which converges to zero. 
+    Note that 
+    \begin{align*}
+    \sum_{j=1}^J j2^j =&\sum_{j=1}^J \sum_{k=j}^J2^k\\
+    = & \sum_{j=1}^J 2^j\sum_{k=0}^{J-j}2^k \\
+    = & \sum_{j=1}^J 2^j (2^{J-j+1}-1)\\
+    = & J2^{J+1} - (2^{J+1}-2)\\  
+    = & (J-1)2^{J+1} + 2.
+\end{align*}
+
 \end{proof}
+
+
+%
+%
+%Every Faber-Schauder function is obviously dependent with itself. 
+%
+%Indexing with \(i=2^j+k\), when \(\psi_{j,k}\) has index \((j,k)\) (excluding \(i=1\)), we see that, when \(j\ge 0\), \(\psi_i\) is dependent with \(2^{j'-j}\), functions \(\psi_{j',k'}\), \(i'=2^{j'}+k'\ge i\) of level \(j'\ge j\)  (including itself, when \(j'=j\)).
+%
+%So if \(J\) is the higest level, \(\psi_i\) is dependent with 
+%\[
+%\sum_{d=0}^{J-j}2^d=2^{J-j+1}-1.
+%\]
+%Faber-Schauder functions \(\psi_{i'}\) with index \(i'\ge i\). 
+%Hence summing over all levels \(0,\ldots,J\) and indices within a level, the number of combinations of functions \((\psi_{j,k},\psi_{j',k'}),0\le j,j'\le J\) and  \(i=2^j+k\le 2^{j'}+k'=i'\) which are dependent is
+%\begin{align*}
+%\sum_{j=0}^J\sum_{k=1}^{2^j}(2^{J-j+1}-1)\\
+%=\sum_{j=0}^J(2^{J+1}-2^j)\\
+%=(J+1)2^{J+1}-(2^{J+1}-1)\\
+%=J2^{J+1}+1. 
+%\end{align*}
+%
+%The Faber-Schauder function \(\psi_1\) is dependent with every Faber-Schauder function (including itself) up to and including level \(J\), which counts for \(2^{J+1}\) Faber-Schauder functions with a higher index or equal index, up to level \(J\). 
+%
+%In total we have 
+%
+%\[
+%J2^{J+1}+1+2^{J+1}=(J+1)2^{J+1}+1. 
+%\]
+%Faber-Schauder functions up to level \(J\) dependent with a Faber-Schauder function with equal (itself) or higher index. 
+%
+%
+%If we only consider dependent pairs \((\psi_i,\psi_{i'})\) with \(i'>i\), then we have 
+%\[
+%J2^{J+1}+1
+%\]
+%of such pairs (minus all \(2^{J+1}\) diagonal pairs \((\psi_i,\psi_i)\)).
+%
+%Hence, by symmetry, there are in total \(J2^{J+1}+1+J2^{J+1}+1+2^{J+1}=(2J+1)2^{J+1}+2\) pairs \((\psi_i,\psi_{i'})\) that are dependent.
+%
+%\begin{lemma}
+%	The Girsanov covariantie matrix is sparse.
+%\end{lemma}
+%\begin{proof}
+%	At most \((2J+1)2^{J+1}+2\) entries of the \(2^{J+1}\times 2^{J+1}\)-matrix (\(2^{2J+2}\) entries) are nonzero. The fraction of nonzero elements is at most
+%	\[
+%	\frac{(2J+1)2^{J+1}+2}{2^{2J+2}}=(2J+1)2^{-J-1}+2^{-2J-1},
+%	\]
+%	which converges to zero. 
+%\end{proof}
 \end{document}
