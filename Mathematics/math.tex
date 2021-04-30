@@ -6,6 +6,10 @@
 
 \begin{document}
 
+\begin{notation}
+    When $A$ is a square matrix, we denote by $|A|$ its determinant. If the inverse of $A$ exist, we denote it by $A^{-1}$. 
+\end{notation}
+
 \section{Distribution of the posterior of a finite basis expansion with Gaussian coefficients}
 
 \begin{lemma}\label{lem:posteriordistribution}
@@ -13,11 +17,11 @@
 	\begin{align*}
 		dX_t=b(X_t)dt+\sigma(X_t)dW_t,
 	\end{align*}
-	where \(b\) is equipped with the prior distribution defined by 
+	where  \(\sigma:\re\to \re_{>0}\) is a  measurable function, $(W_t:t\in[0,T])$ is a Brownian motion and \(b\) is equipped with the prior distribution defined by 
 	\[
 	b=\sum_{j=1}^k\theta_j\phi_j,
 	\]
-	where \(\set{\phi_1,\ldots,\phi_k}\) is a linearly independent basis, and \(\theta=(\theta_1,\ldots,\theta_k)^t\) has multivariate normal distribution \(N(\mu,\Sigma)\), with mean vector $\mu$ and positive definite matrix $\Sigma$, and \(\sigma:\re\to \re_{>0}\) is a  measurable function. Then the  posterior distribution of \(\theta\) given $X^T$ is \(N(\hat\mu,\hat\Sigma)\), where \[\hat\mu=(S+\Sigma^{-1})^{-1}(m+\Sigma^{-1}\mu),\quad\hat\Sigma= (S+\Sigma^{-1})^{-1}\] and the vector \(m=(m_1,\ldots,m_k)^t\) is defined by 
+	where \(\set{\phi_1,\ldots,\phi_k}\) is a linearly independent basis, and \(\theta=(\theta_1,\ldots,\theta_k)^t\) has multivariate normal distribution \(N(\mu,\Sigma)\), with mean vector $\mu$ and positive definite matrix $\Sigma$. Then the  posterior distribution of \(\theta\) given $X^T$ is \(N(\hat\mu,\hat\Sigma)\), where \[\hat\mu=(S+\Sigma^{-1})^{-1}(m+\Sigma^{-1}\mu),\quad\hat\Sigma= (S+\Sigma^{-1})^{-1}\] and the vector \(m=(m_1,\ldots,m_k)^t\) is defined by 
 	\[
 	m_l=\int_0^T\frac{\phi_l(X_t)}{\sigma(X_t)^2}dX_t, \quad l=1,\ldots,k,
 	\] 
@@ -69,6 +73,7 @@ provided $S+\Sigma^{-1}$ is invertible.
  \end{align*}
  using that the integrant in the third last line is the density of a multivariate normal distribution and therefore integrates to one.
 \end{proof}
+Usually we refer to $S$ as the Girsanov matrix. 
 
 \section{The marginal maximum likelihood estimator}
 
