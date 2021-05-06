@@ -230,6 +230,68 @@ So the number of nonzero entries of $S^n$ grows at most like $r\log r$ with $r$ 
 }{2^{2J+2}}= (2J+1)2^{-J-1}+2^{-2J-1},
 \]
 which is of the order $\frac {\log r}r$. 
+
+ \section{Credible bands}
+    Suppose we have a prior $\Pi$ on $\theta$, where $\theta:\re\to\re$ is a 1-periodic function. Let $X^T=(X_t:t\in[0,T])$ be a sample path of $dX_t=\theta(X_t)dt+dW_t$. Consider the posterior $\Pi(\sdot\mid X^T)$. 
+    \begin{definition}
+        A \textbf{pointwise credible band} of \textbf{credible level} $1-\alpha$ are two functions $f_L:\re\to \re$ and $f_H:\re\to \re$ so that for each $t\in\re$,  
+        \[
+        \Pi(\set{\theta: f_L(t)\le\theta(t)\le f_H(t)} \mid X^T) \ge 1-\alpha. 
+        \] 
+        A \textbf{simultaneous  credible band} of \textbf{credible level} $1-\alpha$ are two functions $f_L:\re\to \re$ and $f_H:\re\to \re$ so that 
+        \[
+        \Pi(\set{\theta: f_L(t)\le\theta(t)\le f_H(t)\, \forall t} \mid X^T) \ge 1-\alpha. 
+        \] 
+    \end{definition}
+    So 
+\[  \text{  \textbf{simultaneous credible band} }\implies\text{ \textbf{pointwise credible band.}}\] The reverse does not hold necessarily. 
+
+
+\subsection{How to construct credible bands}
+
+\subsubsection{Exact pointwise credible bands} 
+
+With Gaussian process priors you can construct exact pointwise credible bands. The posterior is of the form \[
+f(t)=\sum_{k=1}^N \theta_k\phi_k, \quad \begin{pmatrix}
+    \theta_1\\\vdots\\\theta_N
+\end{pmatrix} \sim N(m,V), 
+\]
+where $m$ is the $N$-dimensional mean vector and $V$ is the $N\x N$-covariance matrix. 
+
+The coefficients are multivariate normally distributed, so $f(t)$ is, as a linear combination of the coefficients, normally distributed with mean \[
+\E [f(t)] = \sum_{k=1}^N \E[\theta_k]\phi_k(t)=\sum_{k=1}^Nm_k\phi_k(t)
+\]
+and variance \begin{align*}
+\var(f(t))= & \sum_{k=1}^N\sum_{\ell=1}^N \cov(\theta_k,\theta_\ell)\phi_k(t)\phi_\ell(t)\\
+ =& \sum_{k=1}^N\sum_{\ell=1}^N V_{k\ell}\phi_k(t)\phi_\ell(t) 
+\end{align*}
+Let $\xi_p$ be the quantile function of a standard normally distributed random variable $Z$, so $\P(Z\le \xi_p)=p$. 
+The \textit{exact} pointwise credible band (around the posterior mean) is \begin{align*}
+f_L(t) = &\E [f(t)] - \sqrt{\var(f(t))} \xi_{1-\alpha/2}
+\intertext{and}
+ f_H(t) =& \E [f(t)] + \sqrt{\var(f(t))} \xi_{1-\alpha/2}.  
+\end{align*}
+
+\subsubsection{Simulated simultaneous credible bands}
+
+Here I describe a procedure to simulate a $1-\alpha$-simultaneous credible band around the posterior mean. 
+
+\begin{algorithm}
+    Given a prior $\Pi$ on a space of drift functions, and data $X^T=(X_t:t\in[0,T])$. 
+    \begin{enumerate}
+        \item Calculate the posterior $\Pi(\sdot\mid X^T)$,
+        \item calculate the posterior mean $\bar \theta= \int \theta d\Pi(\theta \mid X^T)$ (you may use the \verb|mean| function in the \textit{BayesianNonparametricStatistics.jl} package),
+        \item simulate $\theta_1,\ldots,\theta_M$ from the posterior, 
+        \item for each $i$, calculate $d_i=\sup\set{|\theta_i(t)-\bar \theta(t)|:t\in \re}$.
+        \item take the  $\ceil{(1-\alpha)\cdot M}$ functions $\theta_{(1)},\ldots, \theta_{(\ceil{(1-\alpha)M})}$ from $\theta_1,\ldots,\theta_M$ for which $d_i$ is the smallest. 
+        \item Define $f_L$ and $f_M$ as 
+        \begin{align*}
+        f_L(t)=& \min\set{\theta_{(1)}(t), \ldots, \theta_{(\ceil{(1-\alpha)M})}(t)}
+        \en f_H(t)= \max\set{\theta_{(1)}(t), \ldots, \theta_{(\ceil{(1-\alpha)M})}(t)}.
+        \end{align*}
+    \end{enumerate}
+\end{algorithm}
+
 \appendix
 
 \section{Lemma}
