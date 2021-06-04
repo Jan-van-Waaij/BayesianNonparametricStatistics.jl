@@ -1,6 +1,6 @@
 using Test, Random, InteractiveUtils, SparseArrays, LinearAlgebra, StatsBase
 
-using Main.BayesianNonparametricStatistics
+using BayesianNonparametricStatistics
 
 Base.Libc.srand(123)
 e = Base.MathConstants.e
@@ -308,6 +308,8 @@ sqrttwo = sqrt(2.0)
         model = SDEModel(identity, 1.0, 1.0, 0.001)
         geometricbrownianmotion = SDE(x->0.5*x, model)
 
+        lengthvector = 1000_000
+        x = Vector{Float64}(undef, lengthvector)
         for k in 1:lengthvector
             X = rand(geometricbrownianmotion)
             x[k] = X.samplevalues[end]
