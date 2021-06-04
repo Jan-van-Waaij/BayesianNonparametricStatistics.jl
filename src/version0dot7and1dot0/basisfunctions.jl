@@ -5,8 +5,7 @@
 
 Implements the Fourier basis of functions ϕ_k, defined, if k is odd, by
 ϕ_k(x)=sqrt(2)sin((k+1)π*x) and if k is even, by ϕ_k(x)=sqrt(2)cos(k*x).
-
-# Examples
+This function is defined for k≥0 and ϕ_0≡1.
 
 # Examples
 
@@ -16,9 +15,11 @@ y = fourier(3).(x)
 ```
 """
 function fourier(k::Int)
-  k ≥ 1 || throw(AssertionError("k should be positive"))
+  k ≥ 0 || throw(AssertionError("k should be non-negative"))
   sqrttwo = sqrt(2.0)
-  if isodd(k)
+  if k == 0
+    return x -> 1.0
+  elseif isodd(k)
     return x -> sqrttwo * sinpi(float(k+1)*x)
   else
     return x -> sqrttwo * cospi(float(k)*x)
@@ -59,9 +60,9 @@ end
     faberschauder(j::Int, k::Int)
 
 Implements the k-th Faber-Schauder function of level j. Here, j≥0 and 1≤k≤2^j.
-It is a one periodic function and defined on [0,1] by 2^(j+1)(x-(k-1)2^j) on
-(k-1)2^j≤x≤(2k-1)2^(j+1) and 1 - 2^(j+1)(x-(2k-1)2^(j+1)) on
-[(2k-1)2^(j+1), k2^j] and zero outside these intervals.
+It is a one periodic function and defined on [0,1] by 2^(j+1)(x-(k-1)2^(-j)) on
+(k-1)2^(-j)≤x≤(k-1/2)2^(-j) and 1 - 2^(j+1)(x-(k-1/2)2^(-j)) on
+[(k-1/2)2^(-j), k2^(-j)] and zero outside these intervals.
 
 # See also: faberschauderone.
 

@@ -96,9 +96,68 @@ and\begin{align*}
 \end{align*}
 So it follows from the same lemma that 
 \begin{align*}
-    &\log \int  p_\lambda(X^T\mid\theta)p_\lambda(\theta)d\theta  \\= &-\frac12\log |\lambda^2\Sigma  S + \II_k|  -\frac12\mu^t\Sigma^{-1}\mu+ \frac12(m + \lambda^{-2}\Sigma^{-1}\mu)^t ( S + \lambda^{-2}\Sigma^{-1} )^{-1} (m + \lambda^{-2}\Sigma^{-1}\mu).
+    &\log \int  p_\lambda(X^T\mid\theta)p_\lambda(\theta)d\theta  \\= &-\frac12\log |\lambda^2\Sigma  S + \II_k|  -\frac12\lambda^{-2}\mu^t\Sigma^{-1}\mu+ \frac12(m + \lambda^{-2}\Sigma^{-1}\mu)^t ( S + \lambda^{-2}\Sigma^{-1} )^{-1} (m + \lambda^{-2}\Sigma^{-1}\mu).
 \end{align*}
 \end{proof}
+
+{\color{magenta}
+So can we calculate $(S+\lambda^{-2}\Sigma^{-1})^{-1}$ from $(S+\Sigma^{-1})^{-1}$?
+}
+{\color{cyan}
+What I found out: if $A$ and $B$ are symmetric matrices that commute, then there is an orthonormal matrix $Q$ so that $D_A = Q^TAQ$ and $D_B=Q^TBQ$ are diagonal. In our set-up this happens when $S$ and $\Sigma^{-1}$ commute. They commute when $\Sigma$ is $c\I$.  
+}
+
+\opmerking{In de implementatie voor vaste $\alpha$ kun je  $\mu^t\Sigma^{-1}\mu$ en $\Sigma^{-1}\mu$ opslaan en hoef je maar een keer uit te rekenen.}
+
+{\color{cyan}
+Als $\mu=0$, dan is 
+\begin{align*}
+    &\log \int  p_\lambda(X^T\mid\theta)p_\lambda(\theta)d\theta  \\= &-\frac12\log |\lambda^2\Sigma  S + \II_k|  + \frac12m^t ( S + \lambda^{-2}\Sigma^{-1} )^{-1}m .
+\end{align*}
+Verder hebben we
+\begin{align*}
+    S + \lambda^{-2}\Sigma^{-1} = \lambda^{-2}\Sigma^{-1}\rh{\lambda^2 \Sigma S + I_k}. 
+\end{align*} 
+Dus
+\begin{align*}
+    &\log \int  p_\lambda(X^T\mid\theta)p_\lambda(\theta)d\theta  \\
+    = &-\frac12\log |\lambda^2\Sigma  S + \II_k|  + \frac12\lambda^{2}m^t \rh{\lambda^2 \Sigma S + I_k}^{-1}\Sigma\, m .
+\end{align*}
+Dus de laatste formule hangt niet af van $\Sigma^{-1}$. 
+}
+{
+\color{magenta}
+De vraag is dus, zijn er slimme snelle manieren om de determinant en inverse van $\lambda^2 \Sigma S + I_k$ uit te rekenen? 
+}
+{
+\color{red} Conclusie van 3 dagen aan werken is dat de determinant makkelijk uitgerekend kan worden met behulp van de eigenwaarden, maar de inverse naar het schijnt niet zo makkelijk. 
+}
+
+\begin{lemma}
+    If $\nu_1,\ldots,\nu_k$ are the eigenvalues of $\Sigma S+ I_k$, then $\lambda^2\nu_1-\lambda^2+1,\ldots,\lambda^2\nu_k-\lambda^2+1$ are the eigenvalues of $\lambda^2 \Sigma S + \I_k$. 
+\end{lemma}
+\begin{proof}
+Note that \begin{align*}
+    0=&\abs{\nu_i \I_k - (\Sigma S + \I_k) }\\
+    &\desda\\
+    0=&\abs{\lambda^2\nu_i \I_k - (\lambda^2\Sigma S +\lambda^2 \I_k) }\\
+    = &\abs{(\lambda^2\nu_i-\lambda^2+1) \I_k - (\lambda^2\Sigma S +\I_k) }.
+\end{align*}
+So $\nu_i$ is an eigenvalue of $\Sigma S+ \I_k$ if and only if $\lambda^2\nu_i-\lambda^2+1$ is an eigenvalue of $\lambda^2\Sigma S +\I_k$. 
+\end{proof}
+
+\begin{lemma}
+    If $\nu_1,\ldots,\nu_k$ are the eigenvalues of $\Sigma S$, then $\lambda^2\nu_1+1,\ldots,\lambda^2\nu_k+1$ are the eigenvalues of $\lambda^2 \Sigma S + I_k$. 
+\end{lemma}
+\begin{proof}
+Note that \begin{align*}
+    &\abs{\nu_i \I_k - \Sigma S  }=0\\
+    &\desda\\
+    0=&\abs{\lambda^2\nu_i \I_k - \lambda^2\Sigma S  }\\
+    =&\abs{(\lambda^2\nu_i+1) \I_k - (\lambda^2\Sigma S +\I_k) }\\\end{align*}
+\end{proof}
+
+So the eigenvalues of $\lambda^2\Sigma S + \I_k$ are easily obtained from the eigenvalues of $\Sigma S$ or $\Sigma S + \I_k$. Note that the determinant 
 
 \section{Random scaling}
 
