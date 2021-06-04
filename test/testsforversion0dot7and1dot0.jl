@@ -111,7 +111,6 @@ sqrttwo = sqrt(2.0)
 
     #Test functions are correct, complete and the same in both versions. 
     @testset "basisfunctions.jl" begin
-        @test_throws AssertionError fourier(0)
         @test_throws AssertionError fourier(-1)
         @test_throws AssertionError fourier(-10)
 
@@ -121,7 +120,7 @@ sqrttwo = sqrt(2.0)
         #The Fourier functions are orthogonal.
         t = 0.0:1/(4*ceil(numberoffourierfunctionstested/2)):1.0
         tprecise = 0.0:10.0^-1/(4*ceil(numberoffourierfunctionstested/2)):1.0
-        for k in 1:numberoffourierfunctionstested-1
+        for k in 0:numberoffourierfunctionstested-1
             for l in k+1:numberoffourierfunctionstested
                 phikvalues = fourier(k).(tprecise[1:end-1])
                 philvalues = fourier(l).(tprecise[1:end-1])
@@ -129,13 +128,13 @@ sqrttwo = sqrt(2.0)
             end
         end
         # And the square integrates to one.
-        for k in 1:numberoffourierfunctionstested
+        for k in 0:numberoffourierfunctionstested
             values = fourier(k).(tprecise)
             @test abs(step(tprecise)*sum(values.*values)-1.0) < 10.0^-2
         end
 
         # They are one-periodic.
-        for k in 1:numberoffourierfunctionstested
+        for k in 0:numberoffourierfunctionstested
             for y in t
                 value = fourier(k)(y)
                 for m in -10.0:10.0
@@ -144,8 +143,12 @@ sqrttwo = sqrt(2.0)
                 end
             end
         end
-        #
-        # # They have minimum -sqrt(2) and maximum sqrt(2).
+
+        # fourier(0) is constant 1.0.
+        for x in -10.0:0.01:10.0
+            @test fourier(0)(x) == 1.0
+        end 
+        # # For k≥1 they have minimum -sqrt(2) and maximum sqrt(2).
         for k in 1:numberoffourierfunctionstested
             if k % 2 == 1
                 t = 0.0:0.1*1/(2k+2):1.0
@@ -156,7 +159,7 @@ sqrttwo = sqrt(2.0)
             @test abs(minimum(values)+sqrttwo) < 10.0^-5
             @test abs(maximum(values)-sqrttwo) < 10.0^-5
         end
-        #
+        # # For k≥1:
         # # Functions \phi_k with k odd are zero when x=m/(k+1), m=0,...,k.
         # # Functions \phi_k with k even are zero when x=(1+2m)/(2k), m=0,...,k-1.
         for k in 1:2:numberoffourierfunctionstested
