@@ -118,8 +118,8 @@ Iterate over the sample values.
 """
 Base.iterate(X::SamplePath, state=1) = state > length(X) ? nothing : (X.samplevalues[state], state + 1)
 
-Base.iterate(rX::Base.Iterators.Reverse{SamplePath{S,T}}, state=length(X)) where {S<:AbstractVector{Float64},
-        T<:AbstractVector{Float64}} = state < 1 ? nothing : (X.samplevalues[state], state - 1) 
+Base.iterate(rX::Base.Iterators.Reverse{SamplePath{S,T}}, state=length(rX)) where {S<:AbstractVector{Float64},
+        T<:AbstractVector{Float64}} = state < 1 ? nothing : (rX.samplevalues[state], state - 1) 
 
 """
     Base.eltype(::Type{SamplePath})
