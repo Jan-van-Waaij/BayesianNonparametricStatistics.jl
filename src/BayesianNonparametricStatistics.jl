@@ -24,7 +24,7 @@ calculateposterior
 if v"0.6" ≤ VERSION < v"0.7-"
 	include(joinpath("version0dot6", "BNPversion0dot6.jl"))
 elseif VERSION ≥ v"0.7-"
-	include(joinpath("version0dot7and1dot0", "BNPversion0dot7and1dotX.jl"))
+	include(joinpath("version0dot7and1dotX", "BNPversion0dot7and1dotX.jl"))
 else
 	throw(LoadError("BayesianNonparametricStatistics is only available for Julia version 0.6 and higher."))
 end 
