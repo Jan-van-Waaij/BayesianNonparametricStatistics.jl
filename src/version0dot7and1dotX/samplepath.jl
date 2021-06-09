@@ -130,7 +130,7 @@ Base.eltype(::Type{SamplePath}) = Float64
 
 Returns the i-th observation of the samplepath, that is X.samplevalues[i].
 """
-function Base.getindex(X::SamplePath, i::Int) = X.samplevalues[i]
+Base.getindex(X::SamplePath, i::Int) = X.samplevalues[i]
 
 """
     Base.firstindex(X::SamplePath)
