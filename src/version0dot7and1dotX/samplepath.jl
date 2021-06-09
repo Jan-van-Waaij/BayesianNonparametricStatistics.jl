@@ -34,8 +34,9 @@ isincreasing(x::S) where S<:AbstractRange{T} where T <: Number = step(x) > 0
  time timeinterval[k]. timeinterval is an increasing vector. timeinterval and
  samplevalues are of equal length.
 
- Performance hint: Use AbstractRange objects instead of vectors as much as possible, this
- will speed up computation time.
+ # Performance hint: 
+
+ Use AbstractRange objects for SamplePath.timeinterval whenever possible.
 
 # Constructors:
 
@@ -74,16 +75,26 @@ struct SamplePath{S, T} <: AbstractSamplePath where {S<:AbstractVector{Float64},
   end
 end
 
-step(X::SamplePath{S}) where S<:AbstractRange{T} where T<:Number = step(X.timeinterval)
-
 #constructor
-SamplePath(timeinterval, f::Function) =
-    SamplePath(timeinterval, f.(timeinterval))
+SamplePath(timeinterval, f::Function) = SamplePath(timeinterval, f.(timeinterval))
 
-# Returns the length of timeinterval == samplevalues vectors, not the endtime!
-# TO DO: Answers to examples
 """
-    length(X::SamplePath)
+    Base.step(X::SamplePath{S}) where S<:AbstractRange{T} where T<:Number
+
+Returns the step size of SamplePath.timeinterval.
+
+# Example
+
+```julia
+t = 0.0:0.01:2.0
+X = SamplePath(t, sinpi)
+step(X) == step(t)
+```
+"""
+Base.step(X::SamplePath{S}) where S<:AbstractRange{T} where T<:Number = Base.step(X.timeinterval)
+
+"""
+    Base.length(X::SamplePath)
 
 Returns the length of the vector timeinterval == length vector samplevalues.
 
@@ -98,4 +109,41 @@ X = SamplePath(0.0:0.1:2π, sin)
 length(X) == length(0.0:0.1:2π)
 ```
 """
-length(X::SamplePath)=length(X.timeinterval)
+Base.length(X::SamplePath)=length(X.timeinterval)
+
+"""
+    Base.iterate(X::SamplePath, state=1)
+
+Iterate over the sample values.     
+"""
+Base.iterate(X::SamplePath, state=1) = state > length(X) ? nothing : (X.samplevalues[state], state + 1)
+
+"""
+    Base.eltype(::Type{SamplePath})
+
+Outputs element type of SamplePath, which is Float64.
+"""
+Base.eltype(::Type{SamplePath}) = Float64
+
+"""
+    Base.getindex(X::SamplePath, i::Int)
+
+Returns the i-th observation of the samplepath, that is X.samplevalues[i].
+"""
+function Base.getindex(X::SamplePath, i::Int) = X.samplevalues[i]
+
+"""
+    Base.firstindex(X::SamplePath)
+
+The first index of SamplePath is 1.
+"""
+Base.firstindex(X::SamplePath) = 1
+
+"""
+    Base.lastindex(X::SamplePath)
+
+The last index of SamplePath is length(X).
+"""
+Base.lastindex(X::SamplePath) = length(X)
+
+

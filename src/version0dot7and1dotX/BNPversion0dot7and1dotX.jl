@@ -1,15 +1,16 @@
-import Base: length, step, rand
+import Base: length, step, rand, iterate, eltype, getindex, firstindex, lastindex
 import StatsBase: var, mean
 using LinearAlgebra, SparseArrays, StatsBase, Distributions
 
 # model.jl implements AbstractModel and SDEModel.
-include("model.jl")
+include("model.jl") #OK
 # samplepath.jl implements AbstractSamplePath and SamplePath and
 # extends Base.step, Base.length, to the appropriate parametric
 # types.
-include("samplepath.jl")
+include("samplepath.jl") # Moet ik SamplePath definieren als een iterable? 
+# Is dan ook automatisch minimum en maximum  gedefinieerd?
 # basisfunctions.jl implements the Fourier and Faber-Schauder basis.
-include("basisfunctions.jl")
+include("basisfunctions.jl") #OK 
 # SDE.jl implements AbstractSDE, SDE and extends
 #Distribution.rand to sample an SDE sample path.
 include("sde.jl")
