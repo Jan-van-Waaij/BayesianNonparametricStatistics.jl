@@ -111,6 +111,8 @@ length(X) == length(0.0:0.1:2π)
 """
 Base.length(X::SamplePath)=length(X.timeinterval)
 
+# For the functions below test need to be written.
+
 """
     Base.iterate(X::SamplePath, state=1)
 
@@ -126,7 +128,7 @@ Base.iterate(rX::Base.Iterators.Reverse{SamplePath{S,T}}, state=length(rX)) wher
 
 Outputs element type of SamplePath, which is Float64.
 """
-Base.eltype(::Type{SamplePath}) = Float64
+Base.eltype(::Type{SamplePath{S,T}}) where {S,T} = Float64
 
 """
     Base.getindex(X::SamplePath, i::Int)

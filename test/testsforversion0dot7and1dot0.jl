@@ -107,6 +107,27 @@ sqrttwo = sqrt(2.0)
         @test !BayesianNonparametricStatistics.isincreasing([2.0,2.1,2.2,2.2,2.3])
         @test !BayesianNonparametricStatistics.isincreasing([2.1,2.2,2.3,2.4,2.4])
         @test !BayesianNonparametricStatistics.isincreasing([2.0,2.0, 3.0, 3.0001])
+
+        @test [value for value in X] == X.samplevalues
+        @test try [value for value in X]
+            true
+        catch
+            false
+        end
+        
+        @test sum(X) == sum(X.samplevalues)
+        @test [value for value in Iterators.Reverse(X)] == reverse(X.samplevalues)
+        @test sum(Iterators.Reverse(X)) == sum(X) 
+
+        @test firstindex(X) == 1 
+        @test lastindex(X) == length(X.samplevalues)
+
+        Y = SamplePath([0.1, 0.2], [1.0, 2.0])
+        @test eltype(typeof(X)) == Float64
+        @test eltype(typeof(Y)) == Float64
+
+        @test X[1] == sin(0.0)
+        @test X[10] == sin(1.0)
     end
 
     #Test functions are correct, complete and the same in both versions. 
