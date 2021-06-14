@@ -30,9 +30,9 @@ sqrttwo = sqrt(2.0)
         M = SDEModel(σ, 0.0,10.0,0.01)
         @test M.σ == σ
 
-        σ(x) = 2+sin(x)
-        M = SDEModel(σ, 1.3, 101.0, 0.5)
-        @test M.σ == σ
+        σ2(x) = 2+sin(x)
+        M = SDEModel(σ2, 1.3, 101.0, 0.5)
+        @test M.σ == σ2
         @test M.beginvalue == 1.3
         @test M.endtime == 101.0
         @test M.Δ == 0.5
