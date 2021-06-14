@@ -22,7 +22,8 @@ include("gaussianvectors.jl") # OK
 include("gaussianprocess.jl")
 
 # gaussianprocess.jl is in principe OK, maar nu nog var(Π::GaussianProcess) and
-# cov(s,t, Π) toevoegen. Voeg support voor Distributions toe.
+# cov(s,t, Π) toevoegen. 
+# VOEG SUPPORT VOOR DISTRIBUTIONS TOE.
 
 # calculateposterior.jl implements calculateposterior methods to calculate the
 # posterior.
