@@ -222,8 +222,3 @@ mean(Π)
 ```
 """
 mean(Π::AbstractGaussianProcess) = sumoffunctions(Π.basis, mean(Π.distribution))
-
-#function scaleGP(Π::AbstractGaussianProcess, scalefactor::Float64)
- # m = Π.distribution.mean
-  #Σ = Π.distribution.Σ
-  #d = GaussianVector(scalefactor * m, scalefactor * Σ)

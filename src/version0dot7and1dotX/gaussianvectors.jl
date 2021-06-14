@@ -26,6 +26,8 @@ mean(d::GaussianVector) = d.mean
 
 var(d::GaussianVector) = d.var 
 
+cov(d::GaussianVector) = Matrix(d.var) 
+
 length(d::GaussianVector) = d.length
 
 scaleGV(d::T, scale::Float64) where {T<:GaussianVector} = GaussianVector(scale * d.mean, scale * d.Σ)

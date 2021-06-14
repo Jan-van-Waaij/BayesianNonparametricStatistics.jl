@@ -405,8 +405,9 @@ function calculateposterior(Π::AbstractGaussianProcess,
     σXt = calculateσXt(model.σ, X.samplevalues[1:end-1])
     ψXt = [f.(X.samplevalues[1:end-1]) for f in Π.basis]
     lengthΠ = length(Π)
-    covariancematrixprior = Matrix(Π.distribution.var)
-    precisionprior = inv(covariancematrixprior)
+#    covariancematrixprior = Matrix(Π.distribution.var)
+#    precisionprior = inv(covariancematrixprior)
+    precisionprior = inv(cov(Π.distribution))
     girsanovvector = calculategirsanovvector(lengthΠ, X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(lengthΠ, X.timeinterval, ψXt, σXt)
     precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
@@ -428,8 +429,9 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
         X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(Π, samplevalueindices,
         X.timeinterval, ψXt, σXt)
-    covariancematrixprior = Matrix(Π.distribution.var)
-    precisionprior = inv(covariancematrixprior)
+#    covariancematrixprior = Matrix(Π.distribution.var)
+#    precisionprior = inv(covariancematrixprior)
+    precisionprior = inv(cov(Π.distribution))
     precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
     potentialposterior = girsanovvector + precisionprior * Vector(Π.distribution.mean)
     meanposterior =  precisionmatrixposterior \ potentialposterior
