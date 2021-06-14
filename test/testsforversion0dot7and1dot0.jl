@@ -114,10 +114,12 @@ sqrttwo = sqrt(2.0)
         catch
             false
         end
-        
-        @test sum(X) == sum(X.samplevalues)
+        @test sum(X) ≈ sum(X.samplevalues)
         @test [value for value in Iterators.Reverse(X)] == reverse(X.samplevalues)
-        @test sum(Iterators.Reverse(X)) == sum(X) 
+        @test sum(Iterators.Reverse(X)) ≈ sum(X) 
+        @test maximum(X) == maximum(X.samplevalues)
+        @test minimum(X) == minimum(X.samplevalues)
+        @test extrema(X) == extrema(X.samplevalues)
 
         @test firstindex(X) == 1 
         @test lastindex(X) == length(X.samplevalues)
@@ -127,7 +129,7 @@ sqrttwo = sqrt(2.0)
         @test eltype(typeof(Y)) == Float64
 
         @test X[1] == sin(0.0)
-        @test X[10] == sin(1.0)
+        @test X[11] == sin(1.0)
     end
 
     #Test functions are correct, complete and the same in both versions. 

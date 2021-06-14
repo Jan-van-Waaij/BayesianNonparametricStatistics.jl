@@ -7,8 +7,7 @@ include("model.jl") #OK
 # samplepath.jl implements AbstractSamplePath and SamplePath and
 # extends Base.step, Base.length, to the appropriate parametric
 # types.
-include("samplepath.jl") # Moet ik SamplePath definieren als een iterable? 
-# Is dan ook automatisch minimum en maximum  gedefinieerd?
+include("samplepath.jl") #OK
 # basisfunctions.jl implements the Fourier and Faber-Schauder basis.
 include("basisfunctions.jl") #OK 
 # SDE.jl implements AbstractSDE, SDE and extends
