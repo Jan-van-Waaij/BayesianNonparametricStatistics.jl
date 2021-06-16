@@ -446,11 +446,11 @@ sqrttwo = sqrt(2.0)
         X_distributions = GaussianProcess([sinpi, cospi], MvNormal([1.0, 2.0]))
         
         @test X.basis == [sinpi, cospi]
-        @test X_distributions.basis = [sinpi, cospi]
+        @test X_distributions.basis == [sinpi, cospi]
         @test typeof(X.distribution) <: GaussianVector
         @test typeof(X_distributions.distribution) <: AbstractMvNormal
         @test X.distribution.Σ == [1.0 0.0; 0.0 1.0]
-        @test cov(X_distributions.distribution) = [1.0 0.0; 0.0 4.0]
+        @test cov(X_distributions.distribution) == [1.0 0.0; 0.0 4.0]
         @test mean(X.distribution) == [0.0,0.0]
         @test mean(X_distributions.distribution) == [0.0, 0.0] 
         @test length(X) == 2
