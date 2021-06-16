@@ -119,7 +119,7 @@ struct FaberSchauderExpansionWithGaussianCoefficients{T} <:
      distribution::T
      function FaberSchauderExpansionWithGaussianCoefficients(higestlevel::Int64,
              distribution::T) where {T<:Union{AbstractMvNormal,GaussianVector}}
-         distribution.length == 2^(higestlevel+1) || throw(AssertionError("The length of the
+         length(distribution) == 2^(higestlevel+1) || throw(AssertionError("The length of the
          distribution is not equal to 2^(higestlevel+1)."))
          basis = vcat(faberschauderone, [faberschauder(j,k) for j in 0:higestlevel
              for k in 1:2^j])
