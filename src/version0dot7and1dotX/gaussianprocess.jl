@@ -39,11 +39,11 @@ f = rand(Π)
 ```
 """
 struct GaussianProcess{S, T} <: AbstractGaussianProcess where {
-    S<:AbstractVector{U} where U<:Function, T<:GaussianVector}
+    S<:AbstractVector{U} where U<:Function, T<:Union{AbstractMvNormal,GaussianVector}}
   basis::S
   distribution::T
   function GaussianProcess(basis::S, distribution::T) where {
-        S<:AbstractArray{<:Function}, T<:GaussianVector}
+        S<:AbstractArray{<:Function}, T<:Union{AbstractMvNormal,GaussianVector}}
       length(basis)==length(distribution) || throw(DimensionMismatch(
         "The basis and distribution are not of equal length."))
       new{S, T}(basis, distribution)
