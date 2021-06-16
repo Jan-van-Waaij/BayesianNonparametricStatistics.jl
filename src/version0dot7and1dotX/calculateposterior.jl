@@ -411,7 +411,7 @@ function calculateposterior(Π::AbstractGaussianProcess,
     girsanovvector = calculategirsanovvector(lengthΠ, X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(lengthΠ, X.timeinterval, ψXt, σXt)
     precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
-    potentialposterior = girsanovvector + precisionprior * Vector(Π.distribution.mean)
+    potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
     meanposterior =  precisionmatrixposterior \ potentialposterior
     posteriordistribution = GaussianVector(meanposterior, 
         precisionmatrixposterior^(-0.5))
@@ -433,7 +433,7 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
 #    precisionprior = inv(covariancematrixprior)
     precisionprior = inv(cov(Π.distribution))
     precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
-    potentialposterior = girsanovvector + precisionprior * Vector(Π.distribution.mean)
+    potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
     meanposterior =  precisionmatrixposterior \ potentialposterior
     posteriordistribution = GaussianVector(meanposterior, 
         precisionmatrixposterior^(-0.5))
@@ -446,12 +446,12 @@ function calculateposteriorcoefficients(d::GaussianVector,
     σXt = calculateσXt(model.σ, X.samplevalues[1:end-1])
     ψXt = [f.(X.samplevalues[1:end-1]) for f in Π.basis]
     lengthΠ = length(d)
-    covariancematrixprior = Matrix(Π.distribution.var)
+    covariancematrixprior = Matrix(cov(Π.distribution))
     precisionprior = inv(covariancematrixprior)
     girsanovvector = calculategirsanovvector(lengthΠ, X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(lengthΠ, X.timeinterval, ψXt, σXt)
     precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
-    potentialposterior = girsanovvector + precisionprior * Vector(Π.distribution.mean)
+    potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
     meanposterior =  covariancematrixprior * potentialposterior
     posteriordistribution = GaussianVector(meanposterior, 
         precisionmatrixposterior^(-0.5))
@@ -477,8 +477,8 @@ end
 
 function GibbsSampler(Π::S, A::Float64, B::Float64, X::SamplePath, model::SDEModel,
         numSamples::Int, S0 = 1.0, burnin::Int = 100, intercept::Int = 1) where {S<:AbstractGaussianProcess}
-    meanGPPost = Π.distribution.mean
-    precGPPost = inv(Matrix(Π.distribution.var))
+    meanGPPost = mean(Π.distribution)
+    precGPPost = inv(Matrix(cov(Π.distribution)))
     numberofbasisfunctions = convert(Float64, length(Π))
 
     σXt = calculateσXt(model.σ, X.samplevalues[1:end-1])

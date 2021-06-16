@@ -1,4 +1,4 @@
-using Test, Random, InteractiveUtils, SparseArrays, LinearAlgebra, StatsBase
+using Test, Random, InteractiveUtils, SparseArrays, LinearAlgebra, StatsBase, Distributions
 
 using BayesianNonparametricStatistics
 
@@ -430,7 +430,16 @@ sqrttwo = sqrt(2.0)
 
         @test supertype(AbstractGaussianProcess) == Any
 
+
+        d_distributions = MvNormal([1.0,2.0, 3.0, 4.0])
+
         @test_throws DimensionMismatch GaussianProcess([fourier(k) for k in 1:2], GaussianVector(sparse(Diagonal([1.0,1.0,1.0]))))
+
+        @test_throws DimensionMismatch GaussianProcess([fourier(k) for k in 1:2], d_distributions)
+
+        @test_throws DimensionMismatch GaussianProcess([fourier(k) for k in 1:4], GaussianVector(sparse(Diagonal([1.0,1.0,1.0]))))
+
+        @test_throws DimensionMismatch GaussianProcess([fourier(k) for k in 1:5], d_distributions)
 
         X = GaussianProcess([sinpi, cospi], GaussianVector(sparse(Diagonal([1.0, 1.0]))))
 
