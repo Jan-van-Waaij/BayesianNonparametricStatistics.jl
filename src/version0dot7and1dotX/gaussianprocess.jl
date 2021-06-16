@@ -111,14 +111,14 @@ f = rand(Π)
 ```
 """
 struct FaberSchauderExpansionWithGaussianCoefficients{T} <:
-         AbstractGaussianProcess where T<:GaussianVector
+         AbstractGaussianProcess where T<:Union{AbstractMvNormal, GaussianVector}
      higestlevel::Int64
      basis::Vector{Function}
      leftboundssupport::Vector{Float64}
      rightboundssupport::Vector{Float64}
      distribution::T
      function FaberSchauderExpansionWithGaussianCoefficients(higestlevel::Int64,
-             distribution::T) where {T<:GaussianVector}
+             distribution::T) where {T<:Union{AbstractMvNormal,GaussianVector}}
          distribution.length == 2^(higestlevel+1) || throw(AssertionError("The length of the
          distribution is not equal to 2^(higestlevel+1)."))
          basis = vcat(faberschauderone, [faberschauder(j,k) for j in 0:higestlevel
@@ -145,7 +145,8 @@ function FaberSchauderExpansionWithGaussianCoefficients(
         vectorofstandarddeviations = vcat(vectorofstandarddeviations, repeat(
             standarddeviationsperlevel[k+1:k+1],2^k))
     end
-    distribution = GaussianVector(SparseArrays.sparse(LinearAlgebra.Diagonal(vectorofstandarddeviations)))
+#    distribution = GaussianVector(SparseArrays.sparse(LinearAlgebra.Diagonal(vectorofstandarddeviations)))
+    distribution = MvNormal(vectorofstandarddeviations)
     return FaberSchauderExpansionWithGaussianCoefficients(higestlevel,
         distribution)
 end
