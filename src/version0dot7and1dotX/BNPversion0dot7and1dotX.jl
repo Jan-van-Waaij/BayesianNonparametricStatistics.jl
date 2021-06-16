@@ -23,8 +23,7 @@ include("gaussianprocess.jl")
 
 # gaussianprocess.jl is in principe OK, maar nu nog var(Π::GaussianProcess) and
 # cov(s,t, Π) toevoegen. 
-# VOEG SUPPORT VOOR DISTRIBUTIONS TOE.
 
 # calculateposterior.jl implements calculateposterior methods to calculate the
 # posterior.
-include("calculateposterior.jl")
+include("calculateposterior.jl") # Verander GaussianVector in MvNormal.

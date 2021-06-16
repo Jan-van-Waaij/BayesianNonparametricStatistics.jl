@@ -443,19 +443,38 @@ sqrttwo = sqrt(2.0)
 
         X = GaussianProcess([sinpi, cospi], GaussianVector(sparse(Diagonal([1.0, 1.0]))))
 
+        X_distributions = GaussianProcess([sinpi, cospi], MvNormal([1.0, 2.0]))
+        
         @test X.basis == [sinpi, cospi]
-
+        @test X_distributions.basis = [sinpi, cospi]
         @test typeof(X.distribution) <: GaussianVector
+        @test typeof(X_distributions.distribution) <: AbstractMvNormal
         @test X.distribution.Σ == [1.0 0.0; 0.0 1.0]
+        @test cov(X_distributions.distribution) = [1.0 0.0; 0.0 4.0]
         @test mean(X.distribution) == [0.0,0.0]
+        @test mean(X_distributions.distribution) == [0.0, 0.0] 
         @test length(X) == 2
-        @test typeof(rand(X)) <: Function
+        @test length(X_distributions) == 2 
+        @test typeof(rand(X)) <: Function     
+        @test typeof(rand(X_distributions)) <: Function
         
         n = 100000
         a = sinpi(1/4)
         x = Vector{Float64}(undef, n) 
         for k in 1:n
             f = rand(X)
+            x[k] = f(1/4)
+        end
+
+        @test abs(StatsBase.mean(x))<0.01
+        @test abs(StatsBase.var(x)-2*a^2)<0.1
+
+        X_distributions = GaussianProcess([sinpi, cospi], MvNormal([1.0,1.0]))
+        n = 100000
+        a = sinpi(1/4)
+        x = Vector{Float64}(undef, n) 
+        for k in 1:n
+            f = rand(X_distributions)
             x[k] = f(1/4)
         end
 
@@ -845,6 +864,7 @@ sqrttwo = sqrt(2.0)
             x[:,k] = f.(y)
         end
         @test maximum(abs.(StatsBase.mean(x, dims = 2))) < 0.1
+        @test maximum(abs.(mean(postΠ).(y))) < 0.1
 
         Π = GaussianProcess([fourier(k) for k in 1:40], GaussianVector(sparse(Diagonal([k^(-1.0) for k in 1:40]))))
 
@@ -863,5 +883,6 @@ sqrttwo = sqrt(2.0)
         end
 
         @test maximum(abs.(StatsBase.mean(x, dims = 2))) < 0.1
+        @test maximum(abs.(mean(postΠ).(y))) < 0.1
     end # testset calculateposterior.jl
 end # testset. 

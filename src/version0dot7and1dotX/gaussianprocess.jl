@@ -16,13 +16,14 @@ abstract type AbstractGaussianProcess end
 
 """
   struct GaussianProcess{S, T} <: AbstractGaussianProcess where {
-      S<:AbstractVector{U} where U<:Function, T<:GaussianVector}
+      S<:AbstractVector{U} where U<:Function, T<:Union{AbstractMvNormal,GaussianVector}}
     basis::S
     distribution::T
   end
 
 Implements a Gaussian process defined as an inner product of a Gaussian vector
-with distribution 'distribution' of type GaussianVector and a vector of functions,
+with distribution 'distribution' of type GaussianVector or a subtype of AbstractMvNormal 
+(from the Distributions.jl package) and a vector of functions,
 the basis of the function space. For the use of a Gaussian process expanded in 
 Faber-Schauder functions up to level j, we recommend using 
 FaberSchauderExpansionWithGaussianCoefficients, as this makes efficient use of
@@ -33,7 +34,8 @@ See also: FaberSchauderExpansionWithGaussianCoefficients, AbstractGaussianProces
 # Example
 
 ```julia
-distribution = GaussianVector(diagm(0 => [k^(-1.0) for k in 1.0:10.0]))
+using Distributions
+distribution = MvNormal([k^(-1.0) for k in 1:10])
 Π = GaussianProcess([fourier(k) for k in 1:10], distribution)
 f = rand(Π)
 ```
@@ -79,7 +81,7 @@ end
 
 """
     struct FaberSchauderExpansionWithGaussianCoefficients{T} <:
-            AbstractGaussianProcess where T<:GaussianVector
+            AbstractGaussianProcess where T<:Union{AbstractMvNormal,GaussianVector}
         higestlevel::Int64
         basis::Vector{Function}
         leftboundssupport::Vector{Float64}
@@ -99,7 +101,7 @@ is by its very definition a Faber-Schauder basis. The length of distribution
 should be equal to 2^(higestlevel+1). The second constructor defines a Gaussian 
 process with Faber-Schauder basis with independent coefficients with 
 length(standarddeviationsperlevel)-1 levels (there is also a level zero), so 
-2^(length(standarddeviationsperlevel)) number of basis functions, where the variance 
+2^(length(standarddeviationsperlevel)) number of basis functions, where the standard deviation 
 of the coefficients belonging to level k is standarddeviationsperlevel[k+1].
 
 # Example
@@ -154,6 +156,7 @@ end
 #Extends Base.length to objects of a subtypes of AbstractGaussianProcess.
 """
     length(Π::AbstractGaussianProcess)
+    length(Π::FaberSchauderExpansionWithGaussianCoefficients)
 
 Returns the number of basis functions == length of the distribution of the
 coefficients. So for a FaberSchauderExpansionWithGaussianCoefficients object it
@@ -169,6 +172,7 @@ length(Π)
 ```
 """
 length(Π::AbstractGaussianProcess)=length(Π.basis)
+length(Π::FaberSchauderExpansionWithGaussianCoefficients) = 2^(Π.higestlevel+1)
 
 """
     sumoffunctions(vectoroffunctions::Vector{<:Function},
@@ -198,7 +202,8 @@ and the basis functions are defined in Π.basis.
 # Example
 
 ```julia
-distribution = GaussianVector([k^(-1.0) for k in 1:100])
+using Distributions
+distribution = MvNormal([k^(-1.0) for k in 1:100])
 Π = GaussianProcess([fourier(k) for  k in 1:100], distribution)
 f = rand(Π)
 ```
@@ -217,7 +222,8 @@ Calculates the mean of the Gaussian process. Returns a function.
 #Examples
 
 ```julia
-distribution = GaussianVector([k^(-1.0) for k in 1:100])
+using Distributions
+distribution = MvNormal([k^(-1.0) for k in 1:100])
 Π = GaussianProcess([fourier(k) for  k in 1:100], distribution)
 mean(Π)
 ```
