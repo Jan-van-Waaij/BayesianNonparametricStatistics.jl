@@ -132,6 +132,20 @@ struct FaberSchauderExpansionWithGaussianCoefficients{T} <:
      end
 end
 
+function createvectorofstandarddistributionsfromstandarddeviationsperlevel(standarddeviationsperlevel::AbstractArray{Float64})
+    lenghtstandarddeviationsperlevel = length(standarddeviationsperlevel) 
+    lenghtstandarddeviationsperlevel > 0 || throw(AssertionError("standarddeviationsperlevel is of zero length."))
+    # The distribution has length 2^lenghtstandarddeviationsperlevel=2^(higestlevel+1).
+    vectorofstandarddeviations = Vector{Float64}(undef, 2^lenghtstandarddeviationsperlevel)
+    # There are two functions of level zero.
+    vectorofstandarddeviations[1:2] .= standarddeviationsperlevel[1]
+    # and 2^k of level k, k=1,2,...
+    for k in 1:lenghtstandarddeviationsperlevel-1
+        vectorofstandarddeviations[3+(k-1)*2^k:2+k*2^k] .= standarddeviationsperlevel[k+1]
+    end
+    return vectorofstandarddeviations  
+end 
+
 # Constructor
 function FaberSchauderExpansionWithGaussianCoefficients(
         standarddeviationsperlevel::AbstractArray{Float64})
@@ -140,13 +154,18 @@ function FaberSchauderExpansionWithGaussianCoefficients(
         zero length."))
     # We start with level zero.
     higestlevel = lenghtstandarddeviationsperlevel - 1
-    # There are two functions of level zero.
-    vectorofstandarddeviations = repeat(standarddeviationsperlevel[1:1],2)
-    # and 2^k of level k, k=1,2,...
-    for k in 1:higestlevel
-        vectorofstandarddeviations = vcat(vectorofstandarddeviations, repeat(
-            standarddeviationsperlevel[k+1:k+1],2^k))
-    end
+    vectorofstandarddeviations = createvectorofstandarddistributionsfromstandarddeviationsperlevel(standarddeviationsperlevel)
+    # allocate vector
+    # vectorofstandarddeviations = Vector{Float64}(undef, 2^lenghtstandarddeviationsperlevel)
+    # #vectorofstandarddeviations = repeat(standarddeviationsperlevel[1:1],2)
+    # # There are two functions of level zero.
+    # vectorofstandarddeviations[1:2] .= standarddeviationsperlevel[1]
+    # # and 2^k of level k, k=1,2,...
+    # for k in 1:higestlevel
+    #     # vectorofstandarddeviations = vcat(vectorofstandarddeviations, repeat(
+    #     #     standarddeviationsperlevel[k+1:k+1],2^k))
+    #     vectorofstandarddeviations[3+(k-1)*2^k:2+k*2^k] .= standarddeviationsperlevel[k+1]
+    # end
 #    distribution = GaussianVector(SparseArrays.sparse(LinearAlgebra.Diagonal(vectorofstandarddeviations)))
     distribution = MvNormal(vectorofstandarddeviations)
     return FaberSchauderExpansionWithGaussianCoefficients(higestlevel,

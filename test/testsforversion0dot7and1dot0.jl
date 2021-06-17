@@ -497,6 +497,25 @@ sqrttwo = sqrt(2.0)
         Π = FaberSchauderExpansionWithGaussianCoefficients(0,distribution)
         @test length(Π) == 2
 
+        f = BayesianNonparametricStatistics.createvectorofstandarddistributionsfromstandarddeviationsperlevel
+
+        standarddeviationsperlevel = 1.0:4.0
+
+        @test f(standarddeviationsperlevel) == [1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0]
+
+        @test_throws AssertionError f(Float64[])
+
+        for k in 1:10 
+            vectorofstandarddeviations = f(1.0:k)
+            @test length(vectorofstandarddeviations) == 2^k
+            @test vectorofstandarddeviations[1] == 1.0
+            @test vectorofstandarddeviations[2] == 1.0
+            @test vectorofstandarddeviations[end] == k 
+            for ℓ in 1:k 
+                @test all(vectorofstandarddeviations[1+2^ℓ:2^(ℓ+1)] .== ℓ)
+            end 
+        end 
+
         @test_throws AssertionError sumoffunctions([sin], [1.0,2.0])
 
         vectoroffunctions = [sin, x -> cos(x+π/2)]
