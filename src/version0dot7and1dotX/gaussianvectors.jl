@@ -28,6 +28,8 @@ var(d::GaussianVector) = d.var
 
 cov(d::GaussianVector) = Matrix(d.var) 
 
+invcov(d::GaussianVector) = inv(cholesky(cov(d)))
+
 length(d::GaussianVector) = d.length
 
 scaleGV(d::T, scale::Float64) where {T<:GaussianVector} = GaussianVector(scale * d.mean, scale * d.Σ)
