@@ -1,6 +1,7 @@
 import Base: length, step, rand, iterate, eltype, getindex, firstindex, lastindex
 import StatsBase: var, mean
 import Statistics: cov 
+import Distributions: invcov
 using LinearAlgebra, SparseArrays, StatsBase, Distributions
 
 # model.jl implements AbstractModel and SDEModel.
