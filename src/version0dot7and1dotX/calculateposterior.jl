@@ -437,11 +437,13 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
     precisionprior = invcov(Π.distribution)
     precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
     potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
-    meanposterior =  precisionmatrixposterior \ potentialposterior
-    sqrtcovmatrixposterior = sqrt(inv(cholesky(precisionmatrixposterior)))
-    posteriordistribution = GaussianVector(meanposterior, sqrtcovmatrixposterior)
-    return FaberSchauderExpansionWithGaussianCoefficients(Π.higestlevel,
-        posteriordistribution)
+    posteriordistributiononcoefficients = MvNormalCanon(potentialposterior, precisionmatrixposterior)
+##    meanposterior =  precisionmatrixposterior \ potentialposterior
+##    sqrtcovmatrixposterior = sqrt(inv(cholesky(precisionmatrixposterior)))
+##    posteriordistribution = GaussianVector(meanposterior, sqrtcovmatrixposterior)
+##    return FaberSchauderExpansionWithGaussianCoefficients(Π.higestlevel,
+##        posteriordistribution)
+    return FaberSchauderExpansionWithGaussianCoefficients(Π.higestlevel, posteriordistributiononcoefficients)
 end
 
 function calculateposteriorcoefficients(d::GaussianVector,
