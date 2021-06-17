@@ -497,7 +497,7 @@ sqrttwo = sqrt(2.0)
         Π = FaberSchauderExpansionWithGaussianCoefficients(0,distribution)
         @test length(Π) == 2
 
-        f = BayesianNonparametricStatistics.createvectorofstandarddistributionsfromstandarddeviationsperlevel
+        f = BayesianNonparametricStatistics.createvectorofstandarddeviationsfromstandarddeviationsperlevel
 
         standarddeviationsperlevel = 1.0:4.0
 

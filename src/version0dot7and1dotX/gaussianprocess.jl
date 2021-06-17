@@ -132,7 +132,7 @@ struct FaberSchauderExpansionWithGaussianCoefficients{T} <:
      end
 end
 
-function createvectorofstandarddistributionsfromstandarddeviationsperlevel(standarddeviationsperlevel::AbstractArray{Float64})
+function createvectorofstandarddeviationsfromstandarddeviationsperlevel(standarddeviationsperlevel::AbstractArray{Float64})
     lenghtstandarddeviationsperlevel = length(standarddeviationsperlevel) 
     lenghtstandarddeviationsperlevel > 0 || throw(AssertionError("standarddeviationsperlevel is of zero length."))
     # The distribution has length 2^lenghtstandarddeviationsperlevel=2^(higestlevel+1).
@@ -154,7 +154,7 @@ function FaberSchauderExpansionWithGaussianCoefficients(
         zero length."))
     # We start with level zero.
     higestlevel = lenghtstandarddeviationsperlevel - 1
-    vectorofstandarddeviations = createvectorofstandarddistributionsfromstandarddeviationsperlevel(standarddeviationsperlevel)
+    vectorofstandarddeviations = createvectorofstandarddeviationsfromstandarddeviationsperlevel(standarddeviationsperlevel)
     # allocate vector
     # vectorofstandarddeviations = Vector{Float64}(undef, 2^lenghtstandarddeviationsperlevel)
     # #vectorofstandarddeviations = repeat(standarddeviationsperlevel[1:1],2)
