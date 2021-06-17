@@ -512,7 +512,7 @@ sqrttwo = sqrt(2.0)
             @test vectorofstandarddeviations[2] == 1.0
             @test vectorofstandarddeviations[end] == k 
             for ℓ in 1:k 
-                @test all(vectorofstandarddeviations[1+2^ℓ:2^(ℓ+1)] .== ℓ)
+                @test all(vectorofstandarddeviations[1+2^(ℓ-1):2^ℓ] .== ℓ)
             end 
         end 
 
