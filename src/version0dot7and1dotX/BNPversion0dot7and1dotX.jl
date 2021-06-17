@@ -24,6 +24,11 @@ include("gaussianprocess.jl")
 # gaussianprocess.jl is in principe OK, maar nu nog var(Π::GaussianProcess) and
 # cov(s,t, Π) toevoegen. 
 
+# Check of matrices die positief definiet moeten zijn ook daadwerkelijk positief 
+# definiet zijn. 
+
+# vervang inv(A) door inv(cholesky(A)) voor positief definiete matrices. 
+
 # calculateposterior.jl implements calculateposterior methods to calculate the
 # posterior.
 include("calculateposterior.jl") # Verander GaussianVector in MvNormal.
