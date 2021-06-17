@@ -141,7 +141,7 @@ function createvectorofstandarddistributionsfromstandarddeviationsperlevel(stand
     vectorofstandarddeviations[1:2] .= standarddeviationsperlevel[1]
     # and 2^k of level k, k=1,2,...
     for k in 1:lenghtstandarddeviationsperlevel-1
-        vectorofstandarddeviations[3+(k-1)*2^k:2+k*2^k] .= standarddeviationsperlevel[k+1]
+        vectorofstandarddeviations[2^k+1:2^(k+1)] .= standarddeviationsperlevel[k+1]
     end
     return vectorofstandarddeviations  
 end 
