@@ -6,9 +6,9 @@
 Subtypes: GaussianProcess and FaberSchauderExpansionWithGaussianCoefficients.
 Supertype: Any
 
-Both subtypes represent a Gaussian process expressed as the inner product of a
-Gaussian vector of real-valued coefficients and and a vector of functions. The
-distribution is represented by a GaussianVector object.
+Both subtypes represent a Gaussian process represented as a series expansion
+in a basis of functions, where the vector of functions is multivariate normally
+distributed. 
 
 See also: GaussianProcess and FaberSchauderExpansionWithGaussianCoefficients.
 """
@@ -52,6 +52,7 @@ struct GaussianProcess{S, T} <: AbstractGaussianProcess where {
   end
 end
 
+# Tests need to be written. 
 """
     calculateboundssupport(higestlevel::Int)
 
@@ -78,6 +79,29 @@ function calculateboundssupport(higestlevel::Int)
     end
     return (leftboundsupport, rightboundsupport)
 end
+
+"""
+    createFaberSchauderBasisUpToLevelHigestLevel(higestlevel::Int)
+
+Internal function, not exported.
+
+Creates Faber-Schauder basis up to level higestlevel. Returns a 
+Vector{Function} type of length 2^(higestlevel+1). The first element 
+of the vector is faberschauderone, and the 2^j+k element is 
+faberschauder(j,k), with 0≤j≤higestlevel and 1≤k≤2^j. 
+"""
+function createFaberSchauderBasisUpToLevelHigestLevel(higestlevel::Int)
+    higestlevel≥0 || throw(AssertionError("The levels are non-negative."))
+    # There are 2^(higestlevel+1) basis functions. 
+    basis = Vector{Function}(undef, 2^(higestlevel+1))
+    basis[1] = faberschauderone
+    for j in 0:higestlevel
+        for k in 1:2^j 
+            basis[2^j+k] = faberschauder(j,k)
+        end
+    end 
+    return basis 
+end 
 
 """
     struct FaberSchauderExpansionWithGaussianCoefficients{T} <:
@@ -123,8 +147,9 @@ struct FaberSchauderExpansionWithGaussianCoefficients{T} <:
              distribution::T) where {T<:Union{AbstractMvNormal,GaussianVector}}
          length(distribution) == 2^(higestlevel+1) || throw(AssertionError("The length of the
          distribution is not equal to 2^(higestlevel+1)."))
-         basis = vcat(faberschauderone, [faberschauder(j,k) for j in 0:higestlevel
-             for k in 1:2^j])
+         basis = createFaberSchauderBasisUpToLevelHigestLevel(higestlevel)
+         # basis = vcat(faberschauderone, [faberschauder(j,k) for j in 0:higestlevel
+         #     for k in 1:2^j])
          leftboundssupport, rightboundssupport = calculateboundssupport(
              higestlevel)
          new{T}(higestlevel, basis,

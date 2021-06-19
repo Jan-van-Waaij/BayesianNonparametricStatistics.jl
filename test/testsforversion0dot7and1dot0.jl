@@ -497,6 +497,22 @@ sqrttwo = sqrt(2.0)
         Π = FaberSchauderExpansionWithGaussianCoefficients(0,distribution)
         @test length(Π) == 2
 
+        f = BayesianNonparametricStatistics.createFaberSchauderBasisUpToLevelHigestLevel
+
+        for i in 1:10 
+            v = f(i)
+            vnext = f(i+1)
+            @test length(v) == 2^(i+1)
+            @test v[1] == faberschauderone
+            @test vnext[1:length(v)] == v 
+            @test length(unique(v)) == length(v)
+            @test try [item[0.5] for item in v]
+                true
+            catch
+                false
+            end
+        end 
+
         f = BayesianNonparametricStatistics.createvectorofstandarddeviationsfromstandarddeviationsperlevel
 
         standarddeviationsperlevel = 1.0:4.0
