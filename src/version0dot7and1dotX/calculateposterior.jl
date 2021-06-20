@@ -113,6 +113,7 @@ function calculategirsanovmatrixelement(
         ψ2Xt::T,
         σ::Float64,
         Δt::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
+# what am I doing here? 
     filteredψ1Xt = ψ1Xt[samplevalueindices]
     filteredψ2Xt = ψ2Xt[samplevalueindices]
     return Δt * sum(filteredψ1Xt .* filteredψ2Xt) / (σ * σ)
@@ -172,7 +173,7 @@ end
 Internal function, not exported!
 
 Calculated Δt, returns a Float64, when timeinterval is a range object, and
-wise the increments of the timeinterval vector.
+otherwise the increments of the timeinterval vector.
 """
 calculateΔt(timeinterval::AbstractRange{Float64}) = step(timeinterval)
 calculateΔt(timeinterval::AbstractArray{Float64}) = timeinterval[2:end] -

@@ -162,7 +162,7 @@ end
 Internal function, not exported!
 
 Calculated a vector of standard deviations for all basis functions, where basis function i gets standard deviation 
-standarddeviationsperlevel[ℓ] if ℓ is the level of i.
+standarddeviationsperlevel[ℓ+1] if ℓ is the level of i (we start at level 0).
 """
 function createvectorofstandarddeviationsfromstandarddeviationsperlevel(standarddeviationsperlevel::AbstractArray{Float64})
     lenghtstandarddeviationsperlevel = length(standarddeviationsperlevel) 
