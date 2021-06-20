@@ -60,11 +60,28 @@ Sample from an SDE dX_t=sin(2\pi X_t)dt+dW_t:
 ```
 
 To recover the drift function, using Gaussian process posterior:
-(the code is for Julia 0.7 or 1.0. When using 0.6 leave the line "using LinearAlgebra, SparseArrays" out and replace "Diagonal" in the second line by "diagm") 
+(the code is for Julia 0.7 or 1.X. When using 0.6 leave the line "using LinearAlgebra, SparseArrays" out and replace "Diagonal" in the second line by "diagm") 
 
 ```julia
   using BayesianNonparametricStatistics, LinearAlgebra, SparseArrays, Plots
   distribution = GaussianVector(sparse(Diagonal([k^(-1.0) for k in 1.0:50.0])))
+  Π = GaussianProcess([fourier(k) for k in 1:50], distribution)
+  postΠ = calculateposterior(Π, X, model)
+  # sample 10 times from posterior
+  plot()
+  x = 0.0:0.01:1.0
+  for k in 1:10
+    f = rand(postΠ)
+    y = f.(x)
+    plot!(x,y,show=true)
+  end 
+```
+
+Julia 1.X now also works with the [Distributions](https://juliastats.org/Distributions.jl/stable/) package:
+
+```julia
+  using BayesianNonparametricStatistics, LinearAlgebra, SparseArrays, Plots, Distributions
+  distribution = MvNormal([k^(-1.0) for k in 1.0:50.0])
   Π = GaussianProcess([fourier(k) for k in 1:50], distribution)
   postΠ = calculateposterior(Π, X, model)
   # sample 10 times from posterior
