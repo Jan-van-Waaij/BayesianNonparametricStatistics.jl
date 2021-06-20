@@ -10,6 +10,7 @@ struct GaussianVector{R<:AbstractArray{Float64, 1}, S<:AbstractArray{Float64},
 	numberofGaussians::Int 
 
 	function GaussianVector(mean::R, Σ::S) where {R<:AbstractArray{Float64, 1}, S<:AbstractArray{Float64}}
+		Base.depwarn("GaussianVector is deprecated. Use MvNormal or MvNormalCanon from the Distributions package instead.", :GaussianVector)
 		length = Base.length(mean)
 		size(Σ,1) == length || throw(DimensionMismatch("Dimensions of Σ and μ don't match."))
 		numberofGaussians = size(Σ,2)	
