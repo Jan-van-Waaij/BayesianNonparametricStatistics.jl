@@ -497,6 +497,25 @@ sqrttwo = sqrt(2.0)
         Π = FaberSchauderExpansionWithGaussianCoefficients(0,distribution)
         @test length(Π) == 2
 
+        f = BayesianNonparametricStatistics.calculateboundssupport
+
+        for higestlevel in 1:10
+            leftbounds, rightbounds = f(higestlevel)
+            leftboundsnext, rightboundsnext = f(higestlevel+1)
+            @test length(leftbounds) == 2^(higestlevel+1)
+            @test length(rightbounds) == 2^(higestlevel+1)
+            @test leftbounds[1] == 0.0
+            @test rightbounds[1] == 1.0
+            @test leftboundsnext[1:length(leftbounds)] == leftbounds
+            @test rightboundsnext[1:length(rightbounds)] == rightbounds
+            @test leftbounds[end-2^higestlevel+1] == 0.0
+            @test rightbounds[end] == 1.0
+            for k in 1:2^higestlevel
+                @test leftbounds[end - 2^higestlevel + k] == (k-1)*2.0^(-higestlevel)
+                @test rightbounds[end - 2^higestlevel + k] == k*2.0^(-higestlevel) 
+            end 
+        end 
+
         f = BayesianNonparametricStatistics.createFaberSchauderBasisUpToLevelHigestLevel
 
         for i in 1:10 
@@ -506,7 +525,7 @@ sqrttwo = sqrt(2.0)
             @test v[1] == faberschauderone
             @test vnext[1:length(v)] == v 
             @test length(unique(v)) == length(v)
-            @test try [item[0.5] for item in v]
+            @test try [item(0.5) for item in v]
                 true
             catch
                 false

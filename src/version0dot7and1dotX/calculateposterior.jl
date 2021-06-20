@@ -376,7 +376,7 @@ calculateσXt(σ::Function, v::AbstractArray{Float64}) = σ.(v)
         X::SamplePath, model::SDEModel)::GaussianProcess
 
 Calculates the posterior distribution Π(⋅∣X), and returns it as a
-GaussianProcess object. Uses model to determine the right likelihood.
+GaussianProcess object. Uses model to determine σ.
 
 # Examples
 
@@ -405,19 +405,12 @@ function calculateposterior(Π::AbstractGaussianProcess,
     σXt = calculateσXt(model.σ, X.samplevalues[1:end-1])
     ψXt = [f.(X.samplevalues[1:end-1]) for f in Π.basis]
     lengthΠ = length(Π)
-#    covariancematrixprior = Matrix(Π.distribution.var)
-#    precisionprior = inv(covariancematrixprior)
     precisionprior = invcov(Π.distribution)
     girsanovvector = calculategirsanovvector(lengthΠ, X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(lengthΠ, X.timeinterval, ψXt, σXt)
     precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
     potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
     posteriordistributiononcoefficients = MvNormalCanon(potentialposterior, precisionmatrixposterior)
-    ## meanposterior =  precisionmatrixposterior \ potentialposterior
-    ## sqrtcovmatrixposterior = sqrt(inv(cholesky(precisionmatrixposterior)))
-    #posteriordistribution = GaussianVector(meanposterior, 
-    #    precisionmatrixposterior^(-0.5))
-    ##posteriordistribution = GaussianVector(meanposterior, sqrtcovmatrixposterior)
     return GaussianProcess(Π.basis, posteriordistributiononcoefficients)
 end
 
@@ -432,17 +425,10 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
         X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(Π, samplevalueindices,
         X.timeinterval, ψXt, σXt)
-#    covariancematrixprior = Matrix(Π.distribution.var)
-#    precisionprior = inv(covariancematrixprior)
     precisionprior = invcov(Π.distribution)
     precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
     potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
     posteriordistributiononcoefficients = MvNormalCanon(potentialposterior, precisionmatrixposterior)
-##    meanposterior =  precisionmatrixposterior \ potentialposterior
-##    sqrtcovmatrixposterior = sqrt(inv(cholesky(precisionmatrixposterior)))
-##    posteriordistribution = GaussianVector(meanposterior, sqrtcovmatrixposterior)
-##    return FaberSchauderExpansionWithGaussianCoefficients(Π.higestlevel,
-##        posteriordistribution)
     return FaberSchauderExpansionWithGaussianCoefficients(Π.higestlevel, posteriordistributiononcoefficients)
 end
 

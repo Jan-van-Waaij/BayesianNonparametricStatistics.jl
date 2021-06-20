@@ -148,8 +148,6 @@ struct FaberSchauderExpansionWithGaussianCoefficients{T} <:
          length(distribution) == 2^(higestlevel+1) || throw(AssertionError("The length of the
          distribution is not equal to 2^(higestlevel+1)."))
          basis = createFaberSchauderBasisUpToLevelHigestLevel(higestlevel)
-         # basis = vcat(faberschauderone, [faberschauder(j,k) for j in 0:higestlevel
-         #     for k in 1:2^j])
          leftboundssupport, rightboundssupport = calculateboundssupport(
              higestlevel)
          new{T}(higestlevel, basis,
@@ -180,18 +178,6 @@ function FaberSchauderExpansionWithGaussianCoefficients(
     # We start with level zero.
     higestlevel = lenghtstandarddeviationsperlevel - 1
     vectorofstandarddeviations = createvectorofstandarddeviationsfromstandarddeviationsperlevel(standarddeviationsperlevel)
-    # allocate vector
-    # vectorofstandarddeviations = Vector{Float64}(undef, 2^lenghtstandarddeviationsperlevel)
-    # #vectorofstandarddeviations = repeat(standarddeviationsperlevel[1:1],2)
-    # # There are two functions of level zero.
-    # vectorofstandarddeviations[1:2] .= standarddeviationsperlevel[1]
-    # # and 2^k of level k, k=1,2,...
-    # for k in 1:higestlevel
-    #     # vectorofstandarddeviations = vcat(vectorofstandarddeviations, repeat(
-    #     #     standarddeviationsperlevel[k+1:k+1],2^k))
-    #     vectorofstandarddeviations[3+(k-1)*2^k:2+k*2^k] .= standarddeviationsperlevel[k+1]
-    # end
-#    distribution = GaussianVector(SparseArrays.sparse(LinearAlgebra.Diagonal(vectorofstandarddeviations)))
     distribution = MvNormal(vectorofstandarddeviations)
     return FaberSchauderExpansionWithGaussianCoefficients(higestlevel,
         distribution)
