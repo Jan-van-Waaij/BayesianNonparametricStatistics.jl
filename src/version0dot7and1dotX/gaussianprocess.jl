@@ -156,6 +156,14 @@ struct FaberSchauderExpansionWithGaussianCoefficients{T} <:
      end
 end
 
+"""
+    createvectorofstandarddeviationsfromstandarddeviationsperlevel(standarddeviationsperlevel::AbstractArray{Float64})
+
+Internal function, not exported!
+
+Calculated a vector of standard deviations for all basis functions, where basis function i gets standard deviation 
+standarddeviationsperlevel[ℓ] if ℓ is the level of i.
+"""
 function createvectorofstandarddeviationsfromstandarddeviationsperlevel(standarddeviationsperlevel::AbstractArray{Float64})
     lenghtstandarddeviationsperlevel = length(standarddeviationsperlevel) 
     lenghtstandarddeviationsperlevel > 0 || throw(AssertionError("standarddeviationsperlevel is of zero length."))
