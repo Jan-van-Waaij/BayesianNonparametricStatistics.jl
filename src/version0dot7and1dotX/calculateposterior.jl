@@ -73,7 +73,7 @@ function calculategirsanovmatrixelement(
         σ::Float64,
         Δt::Float64) where {S<:AbstractArray{Float64},
             T<:AbstractArray{Float64}}
-    return Δt * sum(ψ1Xt .* ψ2Xt) / (σ * σ)
+    return Δt * sum(ψ1Xt .* ψ2Xt) / (σ^2)
 end
 #test written
 
@@ -83,7 +83,7 @@ function calculategirsanovmatrixelement(
         σ::Float64,
         Δt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
             T<:AbstractArray{Float64}}
-    return sum(Δt .* ψ1Xt .* ψ2Xt) / (σ * σ)
+    return sum(Δt .* ψ1Xt .* ψ2Xt) / (σ^2)
 end
 #test written
 
@@ -93,7 +93,7 @@ function calculategirsanovmatrixelement(
         σXt::T,
         Δt::Float64) where {R<:AbstractArray{Float64},
             S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
-    return Δt * sum(ψ1Xt .* ψ2Xt ./ (σXt .* σXt))
+    return Δt * sum(ψ1Xt .* ψ2Xt ./ (σXt.^2))
 end
 #test written
 
@@ -103,7 +103,7 @@ function calculategirsanovmatrixelement(
         σXt::S,
         Δt::T) where {Q<:AbstractArray{Float64}, R<:AbstractArray{Float64},
             S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
-    return sum(Δt .* ψ1Xt .* ψ2Xt ./ (σXt .* σXt))
+    return sum(Δt .* ψ1Xt .* ψ2Xt ./ (σXt.^2))
 end
 #test written
 
@@ -116,7 +116,7 @@ function calculategirsanovmatrixelement(
 # what am I doing here? 
     filteredψ1Xt = ψ1Xt[samplevalueindices]
     filteredψ2Xt = ψ2Xt[samplevalueindices]
-    return Δt * sum(filteredψ1Xt .* filteredψ2Xt) / (σ * σ)
+    return Δt * sum(filteredψ1Xt .* filteredψ2Xt) / (σ^2)
 end
 #test written
 
@@ -130,7 +130,7 @@ function calculategirsanovmatrixelement(
     filteredΔt = Δt[samplevalueindices]
     filteredψ1Xt = ψ1Xt[samplevalueindices]
     filteredψ2Xt = ψ2Xt[samplevalueindices]
-    return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt) / (σ * σ)
+    return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt) / (σ^2)
 end
 #test written
 
@@ -145,7 +145,7 @@ function calculategirsanovmatrixelement(
     filteredψ2Xt = ψ2Xt[samplevalueindices]
     filteredσXt = σXt[samplevalueindices]
     return Δt * sum(filteredψ1Xt .* filteredψ2Xt ./
-        (filteredσXt .* filteredσXt))
+        (filteredσXt.^2))
 end
 #test written
 
@@ -161,7 +161,7 @@ function calculategirsanovmatrixelement(
     filteredσXt = σXt[samplevalueindices]
     filteredΔt = Δt[samplevalueindices]
     return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt ./ (
-        filteredσXt .* filteredσXt))
+        filteredσXt.^2))
 end
 #test written
 
@@ -273,44 +273,43 @@ Calculates the kth Girsanov vector element int_0^T ψ_k(X_t)/(σ^2(X_t)) dX_t,
 where ψ_k is the kth basis function and T is the end time.
 """
 function calculategirsanovvectorelement(
-    ΔXt::R,
-    ψXt::S,
-    σXt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
-        T<:AbstractArray{Float64}}
-    return sum(ΔXt .* ψXt ./ (σXt .* σXt))
+        ΔXt::R,
+        ψXt::S,
+        σXt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
+            T<:AbstractArray{Float64}}
+    return sum(ΔXt .* ψXt ./ (σXt.^2))
 end
 #Test written.
 
 function calculategirsanovvectorelement(
-    ΔXt::S,
-    ψXt::T,
-    σ::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
-    return sum(ΔXt .* ψXt) / (σ * σ)
-end
-#Test written.
-
-function calculategirsanovvectorelement(
-        samplevalueindices::BitArray{1},
         ΔXt::S,
+        ψXt::T,
+        σ::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
+    return sum(ΔXt .* ψXt) / (σ^2)
+end
+#Test written.
+
+function calculategirsanovvectorelement(
+        ΔXt::S,
+        samplevalueindices::BitArray{1},
         ψXt::T,
         σ::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
     filteredΔXt = ΔXt[samplevalueindices]
     filteredψXt = ψXt[samplevalueindices]
-    return sum(filteredΔXt .* filteredψXt) / (σ*σ)
+    return sum(filteredΔXt .* filteredψXt) / (σ^2)
 end
 #Test written.
 
 function calculategirsanovvectorelement(
-        samplevalueindices::BitArray{1},
         ΔXt::R,
+        samplevalueindices::BitArray{1},
         ψXt::S,
         σXt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
             T<:AbstractArray{Float64}}
     filteredΔXt = ΔXt[samplevalueindices]
     filterψXt = ψXt[samplevalueindices]
     filteredσXt = σXt[samplevalueindices]
-    return sum(filteredΔXt .* filterψXt ./ (filteredσXt
-        .* filteredσXt))
+    return sum(filteredΔXt .* filterψXt ./ (filteredσXt.^2))
 end
 #Test written.
 
@@ -334,30 +333,34 @@ Internal function, not exported!
 
 Calculates the Girsanov vector.
 """
-function calculategirsanovvector(
-        lengthvector::Int,
-        samplevalues::R,
-        ψXt::S,
-        σXt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{U} where
-            U<:AbstractArray{Float64}, T<:Union{Float64, V} where
-            V<:AbstractArray{Float64}}
+function calculategirsanovvector(samplevalues, args...)
     ΔXt = samplevalues[2:end] - samplevalues[1:end-1]
-    return [calculategirsanovvectorelement(ΔXt, ψXt[k], σXt) for k in
-        1:lengthvector]
+    return [calculategirsanovvectorelement(ΔXt, args...) for k in 1:lengthvector]
 end
-# Test written.
+# function calculategirsanovvector(
+#         lengthvector::Int,
+#         samplevalues::R,
+#         ψXt::S,
+#         σXt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{U} where
+#             U<:AbstractArray{Float64}, T<:Union{Float64, V} where
+#             V<:AbstractArray{Float64}}
+#     ΔXt = samplevalues[2:end] - samplevalues[1:end-1]
+#     return [calculategirsanovvectorelement(ΔXt, ψXt[k], σXt) for k in
+#         1:lengthvector]
+# end
+# # Test written.
 
-function calculategirsanovvector(
-        lengthvector::Int,
-        samplevalueindices::Vector{BitArray{1}},
-        samplevalues::S,
-        ψXt::Vector{Array{Float64,1}},
-        σXt::T) where {S<:AbstractArray{Float64}, T<:Union{Float64, U} where
-            U<:AbstractArray{Float64}}
-    ΔXt = samplevalues[2:end] - samplevalues[1:end-1]
-    return [calculategirsanovvectorelement(samplevalueindices[k], ΔXt, ψXt[k],
-        σXt) for k in 1:lengthvector]
-end
+# function calculategirsanovvector(
+#         lengthvector::Int,
+#         samplevalueindices::Vector{BitArray{1}},
+#         samplevalues::S,
+#         ψXt::Vector{Array{Float64,1}},
+#         σXt::T) where {S<:AbstractArray{Float64}, T<:Union{Float64, U} where
+#             U<:AbstractArray{Float64}}
+#     ΔXt = samplevalues[2:end] - samplevalues[1:end-1]
+#     return [calculategirsanovvectorelement(samplevalueindices[k], ΔXt, ψXt[k],
+#         σXt) for k in 1:lengthvector]
+# end
 # Test written.
 
 """
@@ -407,14 +410,15 @@ function calculateposterior(Π::AbstractGaussianProcess,
     ψXt = [f.(X.samplevalues[1:end-1]) for f in Π.basis]
     lengthΠ = length(Π)
     precisionprior = invcov(Π.distribution)
-    girsanovvector = calculategirsanovvector(lengthΠ, X.samplevalues, ψXt, σXt)
+    girsanovvector = calculategirsanovvector(X.samplevalues, lengthΠ, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(lengthΠ, X.timeinterval, ψXt, σXt)
     precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
     potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
     posteriordistributiononcoefficients = MvNormalCanon(potentialposterior, precisionmatrixposterior)
     return GaussianProcess(Π.basis, posteriordistributiononcoefficients)
-end
+end # Seems good. 
 
+# Check deze functie. 
 function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
         X::SamplePath, model::SDEModel)
     samplevaluesmod1 = mod.(X.samplevalues[1:end-1], 1.0)
@@ -422,8 +426,8 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
     ψXt = [f.(X.samplevalues[1:end-1]) for f in Π.basis]
     samplevalueindices = [Π.leftboundssupport[i] .≤
         samplevaluesmod1 .≤ Π.rightboundssupport[i] for i in 1:length(Π)]
-    girsanovvector = calculategirsanovvector(length(Π), samplevalueindices,
-        X.samplevalues, ψXt, σXt)
+    # hier verder
+    girsanovvector = calculategirsanovvector(X.samplevalues, length(Π), samplevalueindices, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(Π, samplevalueindices,
         X.timeinterval, ψXt, σXt)
     precisionprior = invcov(Π.distribution)
