@@ -245,6 +245,14 @@ function calculategirsanovmatrix(
     return sparse(rowindices, columnindices, V, d, d)
 end
 
+"""
+    sumofxtimesydividedbyzsquared(x::AbstractArray{Float64}, y::AbstractArray{Float64}, z::Float64) = sum(x .* y)/(z^2)
+    sumofxtimesydividedbyzsquared(x::AbstractArray{Float64}, y::AbstractArray{Float64}, z::AbstractArray{Float64}) = sum(x .* y ./ (z.^2)
+
+Internal function. Not exported! 
+
+Calculated sum(x*y/(σ^2)) efficiently and pointwise for x and y, and if σ is a vector, also for σ. 
+"""
 sumofxtimesydividedbyzsquared(x::AbstractArray{Float64}, y::AbstractArray{Float64}, z::Float64) = sum(x .* y)/(z^2)
 sumofxtimesydividedbyzsquared(x::AbstractArray{Float64}, y::AbstractArray{Float64}, z::AbstractArray{Float64}) = sum(x .* y ./ (z.^2))
 
@@ -279,6 +287,7 @@ function calculategirsanovvectorelement(ΔXt, ψXt, σXt)
     return sumofxtimesydividedbyzsquared(ΔXt, ψXt, σXt)
 end
 function calculategirsanovvectorelement(samplevalueindices, ΔXt, ψXt, σXt)
+    println("hi I'm used")
     filteredΔXt = ΔXt[samplevalueindices]
     filteredψXt = ψXt[samplevalueindices]
     return sumofxtimesydividedbyzsquared(filteredΔXt, filteredψXt, σXt)
