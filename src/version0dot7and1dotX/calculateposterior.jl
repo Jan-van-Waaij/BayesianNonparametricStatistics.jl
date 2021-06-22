@@ -288,6 +288,7 @@ function calculategirsanovvectorelement(ΔXt, ψXt, σXt)
 end
 function calculategirsanovvectorelement(samplevalueindices, ΔXt, ψXt, σXt)
     println("hi I'm used")
+    println("ψXt=", ψXt)  
     filteredΔXt = ΔXt[samplevalueindices]
     filteredψXt = ψXt[samplevalueindices]
     return sumofxtimesydividedbyzsquared(filteredΔXt, filteredψXt, σXt)
