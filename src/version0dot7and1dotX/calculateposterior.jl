@@ -245,6 +245,9 @@ function calculategirsanovmatrix(
     return sparse(rowindices, columnindices, V, d, d)
 end
 
+sumofxtimesydividedbyzsquared(x::AbstractArray{Float64}, y::AbstractArray{Float64}, z::Float64) = sum(x .* y)/(z^2)
+sumofxtimesydividedbyzsquared(x::AbstractArray{Float64}, y::AbstractArray{Float64}, z::AbstractArray{Float64}) = sum(x .* y ./ (z.^2))
+
 """
     calculategirsanovvectorelement(
         samplevalueindices::BitArray{1},
@@ -272,45 +275,54 @@ Internal function, used by calculategirsanovvector, not exported!
 Calculates the kth Girsanov vector element int_0^T ψ_k(X_t)/(σ^2(X_t)) dX_t,
 where ψ_k is the kth basis function and T is the end time.
 """
-function calculategirsanovvectorelement(
-    ΔXt::R,
-    ψXt::S,
-    σXt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
-        T<:AbstractArray{Float64}}
-    return sum(ΔXt .* ψXt ./ (σXt.^2))
+function calculategirsanovvectorelement(ΔXt, ψXt, σXt)
+    return sumofxtimesydividedbyzsquared(ΔXt, ψXt, σXt)
 end
-#Test written.
-
-function calculategirsanovvectorelement(
-    ΔXt::S,
-    ψXt::T,
-    σ::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
-    return sum(ΔXt .* ψXt) / (σ^2)
-end
-#Test written.
-
-function calculategirsanovvectorelement(
-        samplevalueindices::BitArray{1},
-        ΔXt::S,
-        ψXt::T,
-        σ::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
+function calculategirsanovvectorelement(samplevalueindices, ΔXt, ψXt, σXt)
     filteredΔXt = ΔXt[samplevalueindices]
     filteredψXt = ψXt[samplevalueindices]
-    return sum(filteredΔXt .* filteredψXt) / (σ^2)
+    return sumofxtimesydividedbyzsquared(filteredΔXt, filteredψXt, σXt)
 end
-#Test written.
 
-function calculategirsanovvectorelement(
-        samplevalueindices::BitArray{1},
-        ΔXt::R,
-        ψXt::S,
-        σXt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
-            T<:AbstractArray{Float64}}
-    filteredΔXt = ΔXt[samplevalueindices]
-    filterψXt = ψXt[samplevalueindices]
-    filteredσXt = σXt[samplevalueindices]
-    return sum(filteredΔXt .* filterψXt ./ (filteredσXt.^2))
-end
+# function calculategirsanovvectorelement(
+#     ΔXt::R,
+#     ψXt::S,
+#     σXt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
+#         T<:AbstractArray{Float64}}
+#     return sum(ΔXt .* ψXt ./ (σXt.^2))
+# end
+# #Test written.
+
+# function calculategirsanovvectorelement(
+#     ΔXt::S,
+#     ψXt::T,
+#     σ::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
+#     return sum(ΔXt .* ψXt) / (σ^2)
+# end
+# #Test written.
+
+# function calculategirsanovvectorelement(
+#         samplevalueindices::BitArray{1},
+#         ΔXt::S,
+#         ψXt::T,
+#         σ::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
+#     filteredΔXt = ΔXt[samplevalueindices]
+#     filteredψXt = ψXt[samplevalueindices]
+#     return sum(filteredΔXt .* filteredψXt) / (σ^2)
+# end
+# #Test written.
+
+# function calculategirsanovvectorelement(
+#         samplevalueindices::BitArray{1},
+#         ΔXt::R,
+#         ψXt::S,
+#         σXt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
+#             T<:AbstractArray{Float64}}
+#     filteredΔXt = ΔXt[samplevalueindices]
+#     filterψXt = ψXt[samplevalueindices]
+#     filteredσXt = σXt[samplevalueindices]
+#     return sum(filteredΔXt .* filterψXt ./ (filteredσXt.^2))
+# end
 #Test written.
 
 """
