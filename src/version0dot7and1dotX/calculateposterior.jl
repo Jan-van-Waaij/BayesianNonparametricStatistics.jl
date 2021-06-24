@@ -107,6 +107,78 @@ function calculategirsanovmatrixelement(
 end
 #test written
 
+### 
+### Rewrite
+###
+function calculategirsanovmatrixelement(
+        samplevalueindices1::BitArray{1},
+        samplevalueindices2::BitArray{1},
+        ψ1Xt::S,
+        ψ2Xt::T,
+        σ::Float64,
+        Δt::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
+# what am I doing here? 
+    samplevalueindices = samplevalueindices1 .& samplevalueindices2
+    filteredψ1Xt = ψ1Xt[samplevalueindices]
+    filteredψ2Xt = ψ2Xt[samplevalueindices]
+    return Δt * sum(filteredψ1Xt .* filteredψ2Xt) / (σ^2)
+end
+#test written
+
+function calculategirsanovmatrixelement(
+        samplevalueindices1::BitArray{1},
+        samplevalueindices2::BitArray{1},
+        ψ1Xt::R,
+        ψ2Xt::S,
+        σ::Float64,
+        Δt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
+            T<:AbstractArray{Float64}}
+    samplevalueindices = samplevalueindices1 .& samplevalueindices2
+    filteredΔt = Δt[samplevalueindices]
+    filteredψ1Xt = ψ1Xt[samplevalueindices]
+    filteredψ2Xt = ψ2Xt[samplevalueindices]
+    return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt) / (σ^2)
+end
+#test written
+
+function calculategirsanovmatrixelement(
+        samplevalueindices1::BitArray{1},
+        samplevalueindices2::BitArray{1},
+        ψ1Xt::R,
+        ψ2Xt::S,
+        σXt::T,
+        Δt::Float64) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
+            T<:AbstractArray{Float64}}
+    samplevalueindices = samplevalueindices1 .& samplevalueindices2
+    filteredψ1Xt = ψ1Xt[samplevalueindices]
+    filteredψ2Xt = ψ2Xt[samplevalueindices]
+    filteredσXt = σXt[samplevalueindices]
+    return Δt * sum(filteredψ1Xt .* filteredψ2Xt ./
+        (filteredσXt.^2))
+end
+#test written
+
+function calculategirsanovmatrixelement(
+        samplevalueindices1::BitArray{1},
+        samplevalueindices2::BitArray{1},
+        ψ1Xt::Q,
+        ψ2Xt::R,
+        σXt::S,
+        Δt::T) where {Q<:AbstractArray{Float64}, R<:AbstractArray{Float64},
+            S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
+    samplevalueindices = samplevalueindices1 .& samplevalueindices2    
+    filteredψ1Xt = ψ1Xt[samplevalueindices]
+    filteredψ2Xt = ψ2Xt[samplevalueindices]
+    filteredσXt = σXt[samplevalueindices]
+    filteredΔt = Δt[samplevalueindices]
+    return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt ./ (
+        filteredσXt.^2))
+end
+### 
+### Rewrite
+###
+
+
 function calculategirsanovmatrixelement(
         samplevalueindices::BitArray{1},
         ψ1Xt::S,
@@ -231,15 +303,15 @@ function calculategirsanovmatrix(
     numberofnonzeroelements = (2*Π.higestlevel+1)*d+2
     V = Vector{Float64}(undef, numberofnonzeroelements)
     Δt = calculateΔt(timeinterval)
+    rowindices, columnindices = vcat(1:d, rowindices, columnindices),
+        vcat(1:d, columnindices, rowindices)
     for i in 1:d
         V[i] = calculategirsanovmatrixelement(samplevalueindices[i],
             ψXt[i], ψXt[i], σXt, Δt)
     end
-    rowindices, columnindices = vcat(1:d, rowindices, columnindices),
-        vcat(1:d, columnindices, rowindices)
     for i in d+1:d+lengthvectors
         V[i+lengthvectors] = V[i] = calculategirsanovmatrixelement(
-            samplevalueindices[columnindices[i]], ψXt[rowindices[i]],
+            samplevalueindices[rowindices[i]], samplevalueindices[columnindices[i]], ψXt[rowindices[i]],
             ψXt[columnindices[i]], σXt, Δt)
     end
     return sparse(rowindices, columnindices, V, d, d)
@@ -431,9 +503,9 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
     samplevaluesmod1 = mod.(X.samplevalues[1:end-1], 1.0)
     σXt = calculateσXt(model.σ, X.samplevalues[1:end-1])
     ψXt = [f.(X.samplevalues[1:end-1]) for f in Π.basis]
+    # You only need to use the values which are in the support of the function.
     samplevalueindices = [Π.leftboundssupport[i] .≤
         samplevaluesmod1 .≤ Π.rightboundssupport[i] for i in 1:length(Π)]
-    # hier verder
     girsanovvector = calculategirsanovvector(length(Π), samplevalueindices,
         X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(Π, samplevalueindices,
