@@ -338,7 +338,7 @@ function calculategirsanovmatrix(
     # rowindices, columnindices = vcat(1:d, rowindices, columnindices),
     #     vcat(1:d, columnindices, rowindices)
     for i in 1:d
-        V[i] = calculategirsanovmatrixelement(samplevalueindices[i],
+        V[i] = calculategirsanovmatrixelement(samplevalueindices[rowindices[i]], samplevalueindices[columnindices[i]],
             ψXt[i], ψXt[i], σXt, Δt)
     end
     for i in d+1:lengthvectors
@@ -572,7 +572,7 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
     girsanovmatrix = calculategirsanovmatrix(Π, samplevalueindices,
         X.timeinterval, ψXt, σXt)
     precisionprior = invcov(Π.distribution)
-    precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
+    precisionmatrixposterior = girsanovmatrix + precisionprior
     potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
     posteriordistributiononcoefficients = MvNormalCanon(potentialposterior, precisionmatrixposterior)
     return FaberSchauderExpansionWithGaussianCoefficients(Π.higestlevel, posteriordistributiononcoefficients)
