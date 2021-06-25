@@ -435,7 +435,7 @@ function calculateposteriorcoefficients(d::GaussianVector,
     precisionprior = inv(covariancematrixprior)
     girsanovvector = calculategirsanovvector(lengthΠ, X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(lengthΠ, X.timeinterval, ψXt, σXt)
-    precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
+    precisionmatrixposterior = girsanovmatrix + precisionprior
     potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
     meanposterior =  covariancematrixprior * potentialposterior
     posteriordistribution = GaussianVector(meanposterior, 
