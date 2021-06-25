@@ -50,8 +50,8 @@ end
 
 """
     calculategirsanovmatrixelement(ψ1Xt, ψ2Xt, σ, Δt)
-    calculategirsanovmatrixelement(samplevalueindices::BitArray{1},
-        ψ1Xt, ψ2Xt, σ, Δt)
+    calculategirsanovmatrixelement(samplevalueindices1::BitArray{1},
+        samplevalueindices2::BitArray{1}, ψ1Xt, ψ2Xt, σ, Δt)
 
 Internal function, not exported!
 
@@ -62,6 +62,9 @@ Let ψ_a and ψ_b denote two basis elements.
 calculategirsanovmatrixelement calculates the (a,b) element of the Girsanov
 matrix defined by int_0^T ψ_a(X_t)ψ_b(X_t)/(σ^2(X_t)) dt, where ψ_a is given
 by ψ1Xt (already evaluated in X) and ψ_b by ψ2Xt (already evaluated in X).
+
+The value samplevalueindices1[i] = false should correspond to Ψ1Xt[i]==0.0.
+Similar for samplevalueindices2 and Ψ2Xt. 
 """
 function calculategirsanovmatrixelement(
         ψ1Xt::S,
