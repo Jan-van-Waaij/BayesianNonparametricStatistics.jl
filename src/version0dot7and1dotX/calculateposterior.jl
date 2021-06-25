@@ -358,7 +358,7 @@ function oldcalculategirsanovmatrix(
         σXt::T) where {S<:AbstractArray{Float64},
             T<:Union{U, Float64} where {U<:AbstractArray{Float64}}}
     lengthvectors, rowindices, columnindices =
-        calculatedependentfaberschauderfunctions(Π.higestlevel)
+        oldcalculatedependentfaberschauderfunctions(Π.higestlevel)
     d = length(Π)
     numberofnonzeroelements = (2*Π.higestlevel+1)*d+2 # Correct.
     V = Vector{Float64}(undef, numberofnonzeroelements)
@@ -571,10 +571,15 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
         X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(Π, samplevalueindices,
         X.timeinterval, ψXt, σXt)
+    oldgirsanovmatrix = oldcalculategirsanovmatrix(Π, samplevalueindices,
+        X.timeinterval, ψXt, σXt)
+    println("Same matrix? ", girsanovmatrix == oldgirsanovmatrix)
+    println(girsanovmatrix)
+    println(oldgirsanovmatrix)
     precisionprior = invcov(Π.distribution)
     precisionmatrixposterior = girsanovmatrix + precisionprior
     println("Symmetric? ", issymmetric(precisionmatrixposterior))
-    println("Positive definite? ", isposdef(precisionmatrixposterior))
+    println("Positive definite? ", isposdef(precisionmatrixposterior)) # Hier is een issue: the precisionmatrixposterior is not positive definite. 
     potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
     posteriordistributiononcoefficients = MvNormalCanon(potentialposterior, precisionmatrixposterior)
     return FaberSchauderExpansionWithGaussianCoefficients(Π.higestlevel, posteriordistributiononcoefficients)
