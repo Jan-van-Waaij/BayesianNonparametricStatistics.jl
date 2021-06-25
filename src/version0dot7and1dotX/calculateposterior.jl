@@ -25,9 +25,6 @@ function calculatedependentfaberschauderfunctions(higestlevel::Int64)
     rowindices[1:2^(higestlevel+1)] .= 1
     columnindices[1:2^(higestlevel+1)] = 1:2^(higestlevel+1)
     index = 2^(higestlevel+1) + 1 # point where we are in constructing rowindices and columnindices
-    println("rowindices 1-10 ", rowindices[1:10])
-    println("columnindices 1-10 ", columnindices[1:10])
-    println("index = ", index)
     # psi_{j,k}=psi_{2^j+k} is dependent with
     # psi_{j+d,(k-1)2^d+1},...,psi_{j+d, k2^d}, d\ge0 (which includes itself).
     for jone in 0:higestlevel
@@ -45,8 +42,6 @@ function calculatedependentfaberschauderfunctions(higestlevel::Int64)
             end
         end
     end
-    println("lengthvectors ", lengthvectors)
-    println("index ", index)
     @assert lengthvectors + 1 == index 
     return (lengthvectors, rowindices, columnindices)
 end
