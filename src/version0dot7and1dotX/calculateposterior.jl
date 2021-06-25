@@ -573,7 +573,8 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
         X.timeinterval, ψXt, σXt)
     oldgirsanovmatrix = oldcalculategirsanovmatrix(Π, samplevalueindices,
         X.timeinterval, ψXt, σXt)
-    println("Same matrix? ", girsanovmatrix == oldgirsanovmatrix)
+    return oldgirsanovmatrix, girsanovmatrix
+    println("Same matrix? ", girsanovmatrix == oldgirsanovmatrix) ## De oude en de nieuwe matrix zijn niet hetzelfde. 
     println(girsanovmatrix)
     println(oldgirsanovmatrix)
     precisionprior = invcov(Π.distribution)
