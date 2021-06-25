@@ -6,7 +6,7 @@
 Internal function, not exported.
 
 Calculates which Faber-Schauder functions (ψ_i,ψ_j) have essential overlapping
-support, i<j. All other combinations (ψ_i, ψ_j), i<j, have essential
+support, i ≤ j. All other combinations (ψ_i, ψ_j), i ≤ j, have essential
 nonoverlapping support and hence int_0^T ψ_i(X_t)ψ_j(X_t)dt=0, which we use in
 calculategirsanovmatrix.
 
@@ -15,7 +15,7 @@ Returns a triple (lengthvectors, rowindices, columnindices) where
 lengthvectors == length(rowindices) == length(columnindices),
 ```
 and for i in 1:lengthvectors (ψ_rowindices[i],ψ_columnindices[i]) have
-essentially overlapping support. For all i, rowindices[i] < columnindices[i].
+essentially overlapping support. For all i, rowindices[i] ≤ columnindices[i].
 """
 function calculatedependentfaberschauderfunctions(higestlevel::Int64)
     lengthvectors = (higestlevel+1)*2^(higestlevel+1)+1 # Correct.
@@ -29,7 +29,7 @@ function calculatedependentfaberschauderfunctions(higestlevel::Int64)
     println("columnindices 1-10 ", columnindices[1:10])
     println("index = ", index)
     # psi_{j,k}=psi_{2^j+k} is dependent with
-    # psi_{j+d,(k-1)2^d+1},...,psi_{j+d, k2^d}, d\ge0.
+    # psi_{j+d,(k-1)2^d+1},...,psi_{j+d, k2^d}, d\ge0 (which includes itself).
     for jone in 0:higestlevel
         twotothepowerjone = 2^jone
         for kone in 1:2^jone
@@ -50,43 +50,6 @@ function calculatedependentfaberschauderfunctions(higestlevel::Int64)
     @assert lengthvectors + 1 == index 
     return (lengthvectors, rowindices, columnindices)
 end
-
-function oldcalculatedependentfaberschauderfunctions(higestlevel::Int64)
-    lengthvectors = higestlevel*2^(higestlevel+1)+1 # Correct.
-    rowindices = Vector{Int}(undef, lengthvectors)
-    columnindices = Vector{Int}(undef, lengthvectors)
-    index = 1
-    # column value need to be strictly greater than row value.
-    # psi_1 is dependent with every Faber-Schauder function.
-    for i in 2:2^(higestlevel+1)
-        rowindices[index] = 1
-        columnindices[index] = i
-        index += 1
-    end
-    println("rowindices 1-10 ", rowindices[1:10])
-    println("columnindices 1-10 ", columnindices[1:10])
-    println("index = ", index)
-    # psi_{j,k}=psi_{2^j+k} is dependent with
-    # psi_{j+d,(k-1)2^d+1},...,psi_{j+d, k2^d}, d\ge1.
-    for jone in 0:higestlevel-1
-        twotothepowerjone = 2^jone
-        for kone in 1:2^jone
-            ione = twotothepowerjone+kone
-            for  jtwo in jone+1:higestlevel
-                d = jtwo - jone
-                twotothepowerjtwo = 2^jtwo
-                for ktwo in (kone-1)*2^d+1:kone*2^d
-                    rowindices[index] = ione
-                    columnindices[index] = twotothepowerjtwo+ktwo
-                    index += 1
-                end
-            end
-        end
-    end
-    print(lengthvectors == index - 1)
-    return (lengthvectors, rowindices, columnindices)
-end
-#test written
 
 # calculategirsanovmatrixelement methods:
 
@@ -145,9 +108,6 @@ function calculategirsanovmatrixelement(
 end
 #test written
 
-### 
-### Rewrite
-###
 function calculategirsanovmatrixelement(
         samplevalueindices1::BitArray{1},
         samplevalueindices2::BitArray{1},
@@ -161,7 +121,6 @@ function calculategirsanovmatrixelement(
     filteredψ2Xt = ψ2Xt[samplevalueindices]
     return Δt * sum(filteredψ1Xt .* filteredψ2Xt) / (σ^2)
 end
-#test written
 
 function calculategirsanovmatrixelement(
         samplevalueindices1::BitArray{1},
@@ -177,7 +136,6 @@ function calculategirsanovmatrixelement(
     filteredψ2Xt = ψ2Xt[samplevalueindices]
     return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt) / (σ^2)
 end
-#test written
 
 function calculategirsanovmatrixelement(
         samplevalueindices1::BitArray{1},
@@ -194,7 +152,6 @@ function calculategirsanovmatrixelement(
     return Δt * sum(filteredψ1Xt .* filteredψ2Xt ./
         (filteredσXt.^2))
 end
-#test written
 
 function calculategirsanovmatrixelement(
         samplevalueindices1::BitArray{1},
@@ -212,68 +169,6 @@ function calculategirsanovmatrixelement(
     return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt ./ (
         filteredσXt.^2))
 end
-### 
-### Rewrite
-###
-
-
-function calculategirsanovmatrixelement(
-        samplevalueindices::BitArray{1},
-        ψ1Xt::S,
-        ψ2Xt::T,
-        σ::Float64,
-        Δt::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
-# what am I doing here? 
-    filteredψ1Xt = ψ1Xt[samplevalueindices]
-    filteredψ2Xt = ψ2Xt[samplevalueindices]
-    return Δt * sum(filteredψ1Xt .* filteredψ2Xt) / (σ^2)
-end
-#test written
-
-function calculategirsanovmatrixelement(
-        samplevalueindices::BitArray{1},
-        ψ1Xt::R,
-        ψ2Xt::S,
-        σ::Float64,
-        Δt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
-            T<:AbstractArray{Float64}}
-    filteredΔt = Δt[samplevalueindices]
-    filteredψ1Xt = ψ1Xt[samplevalueindices]
-    filteredψ2Xt = ψ2Xt[samplevalueindices]
-    return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt) / (σ^2)
-end
-#test written
-
-function calculategirsanovmatrixelement(
-        samplevalueindices::BitArray{1},
-        ψ1Xt::R,
-        ψ2Xt::S,
-        σXt::T,
-        Δt::Float64) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
-            T<:AbstractArray{Float64}}
-    filteredψ1Xt = ψ1Xt[samplevalueindices]
-    filteredψ2Xt = ψ2Xt[samplevalueindices]
-    filteredσXt = σXt[samplevalueindices]
-    return Δt * sum(filteredψ1Xt .* filteredψ2Xt ./
-        (filteredσXt.^2))
-end
-#test written
-
-function calculategirsanovmatrixelement(
-        samplevalueindices::BitArray{1},
-        ψ1Xt::Q,
-        ψ2Xt::R,
-        σXt::S,
-        Δt::T) where {Q<:AbstractArray{Float64}, R<:AbstractArray{Float64},
-            S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
-    filteredψ1Xt = ψ1Xt[samplevalueindices]
-    filteredψ2Xt = ψ2Xt[samplevalueindices]
-    filteredσXt = σXt[samplevalueindices]
-    filteredΔt = Δt[samplevalueindices]
-    return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt ./ (
-        filteredσXt.^2))
-end
-#test written
 
 """
     calculateΔt(timeinterval::AbstractRange{Float64}) = step(timeinterval)
@@ -338,58 +233,14 @@ function calculategirsanovmatrix(
     lengthvectors, rowindices, columnindices =
         calculatedependentfaberschauderfunctions(Π.higestlevel)
     d = length(Π)
-    #numberofnonzeroelements = (2*Π.higestlevel+1)*d+2 # Correct.
     V = Vector{Float64}(undef, lengthvectors)
     Δt = calculateΔt(timeinterval)
-    # rowindices, columnindices = vcat(1:d, rowindices, columnindices),
-    #     vcat(1:d, columnindices, rowindices)
     for i in 1:lengthvectors
         V[i] = calculategirsanovmatrixelement(samplevalueindices[rowindices[i]], 
             samplevalueindices[columnindices[i]], ψXt[rowindices[i]], ψXt[columnindices[i]], σXt, Δt)
     end
-    # Bestaat er een symmetric version van sparse? Ja en nu toepassen! Hoe je niet meer zo te doen. Je kunt Symmetric(sparse(bla)) doen, als A upper triangular. 
     return Symmetric(sparse(rowindices, columnindices, V, d, d))
 end
-
-
-function oldcalculategirsanovmatrix(
-        Π::FaberSchauderExpansionWithGaussianCoefficients,
-        samplevalueindices::Vector{BitArray{1}},
-        timeinterval::S,
-        ψXt::Vector{Array{Float64,1}},
-        σXt::T) where {S<:AbstractArray{Float64},
-            T<:Union{U, Float64} where {U<:AbstractArray{Float64}}}
-    lengthvectors, rowindices, columnindices =
-        oldcalculatedependentfaberschauderfunctions(Π.higestlevel)
-    d = length(Π)
-    numberofnonzeroelements = (2*Π.higestlevel+1)*d+2 # Correct.
-    V = Vector{Float64}(undef, numberofnonzeroelements)
-    Δt = calculateΔt(timeinterval)
-    rowindices, columnindices = vcat(1:d, rowindices, columnindices),
-        vcat(1:d, columnindices, rowindices)
-    for i in 1:d
-        V[i] = calculategirsanovmatrixelement(samplevalueindices[i],
-            ψXt[i], ψXt[i], σXt, Δt)
-    end
-    for i in d+1:d+lengthvectors
-        V[i+lengthvectors] = V[i] = calculategirsanovmatrixelement(
-            samplevalueindices[rowindices[i]], samplevalueindices[columnindices[i]], ψXt[rowindices[i]],
-            ψXt[columnindices[i]], σXt, Δt)
-    end
-    # Bestaat er een symmetric version van sparse? Ja en nu toepassen! Hoe je niet meer zo te doen. Je kunt Symmetric(sparse(bla)) doen, als A upper triangular. 
-    return sparse(rowindices, columnindices, V, d, d)
-end
-
-# """
-#     sumofxtimesydividedbyzsquared(x::AbstractArray{Float64}, y::AbstractArray{Float64}, z::Float64) = sum(x .* y)/(z^2)
-#     sumofxtimesydividedbyzsquared(x::AbstractArray{Float64}, y::AbstractArray{Float64}, z::AbstractArray{Float64}) = sum(x .* y ./ (z.^2)
-
-# Internal function. Not exported! 
-
-# Calculated sum(x*y/(σ^2)) efficiently and pointwise for x and y, and if σ is a vector, also for σ. 
-# """
-# sumofxtimesydividedbyzsquared(x::AbstractArray{Float64}, y::AbstractArray{Float64}, z::Float64) = sum(x .* y)/(z^2)
-# sumofxtimesydividedbyzsquared(x::AbstractArray{Float64}, y::AbstractArray{Float64}, z::AbstractArray{Float64}) = sum(x .* y ./ (z.^2))
 
 """
     calculategirsanovvectorelement(
@@ -573,17 +424,9 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
         X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(Π, samplevalueindices,
         X.timeinterval, ψXt, σXt)
-    #oldgirsanovmatrix = oldcalculategirsanovmatrix(Π, samplevalueindices,
-    #    X.timeinterval, ψXt, σXt)
-    # return oldgirsanovmatrix, girsanovmatrix
-    # println("Same matrix? ", girsanovmatrix == oldgirsanovmatrix) ## De oude en de nieuwe matrix zijn niet hetzelfde. 
-    # println(girsanovmatrix)
-    # println(oldgirsanovmatrix)
     precisionprior = invcov(Π.distribution)
     precisionmatrixposterior = girsanovmatrix + precisionprior
-    println("Symmetric? ", issymmetric(precisionmatrixposterior))
-    println("Positive definite? ", isposdef(precisionmatrixposterior)) # Hier is een issue: the precisionmatrixposterior is not positive definite. 
-    potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
+    potentialposterior = girsanovvector + precisionprior * mean(Π.distribution)
     posteriordistributiononcoefficients = MvNormalCanon(potentialposterior, precisionmatrixposterior)
     return FaberSchauderExpansionWithGaussianCoefficients(Π.higestlevel, posteriordistributiononcoefficients)
 end
