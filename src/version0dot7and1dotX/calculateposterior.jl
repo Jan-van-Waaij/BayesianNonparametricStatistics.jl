@@ -343,11 +343,7 @@ function calculategirsanovmatrix(
     Δt = calculateΔt(timeinterval)
     # rowindices, columnindices = vcat(1:d, rowindices, columnindices),
     #     vcat(1:d, columnindices, rowindices)
-    for i in 1:d
-        V[i] = calculategirsanovmatrixelement(samplevalueindices[rowindices[i]], samplevalueindices[columnindices[i]],
-            ψXt[rowindices[i]], ψXt[columnindices[i]], σXt, Δt)
-    end
-    for i in d+1:lengthvectors
+    for i in 1:lengthvectors
         V[i] = calculategirsanovmatrixelement(samplevalueindices[rowindices[i]], 
             samplevalueindices[columnindices[i]], ψXt[rowindices[i]], ψXt[columnindices[i]], σXt, Δt)
     end
@@ -578,11 +574,11 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
     girsanovmatrix = calculategirsanovmatrix(Π, samplevalueindices,
         X.timeinterval, ψXt, σXt)
     oldgirsanovmatrix = oldcalculategirsanovmatrix(Π, samplevalueindices,
-        X.timeinterval, ψXt, σXt)
+       X.timeinterval, ψXt, σXt)
     return oldgirsanovmatrix, girsanovmatrix
     println("Same matrix? ", girsanovmatrix == oldgirsanovmatrix) ## De oude en de nieuwe matrix zijn niet hetzelfde. 
-    println(girsanovmatrix)
-    println(oldgirsanovmatrix)
+    # println(girsanovmatrix)
+    # println(oldgirsanovmatrix)
     precisionprior = invcov(Π.distribution)
     precisionmatrixposterior = girsanovmatrix + precisionprior
     println("Symmetric? ", issymmetric(precisionmatrixposterior))
