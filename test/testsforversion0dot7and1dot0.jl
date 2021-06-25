@@ -771,52 +771,52 @@ sqrttwo = sqrt(2.0)
 
         samplevalueindices = vcat(trues(100), falses(100))
 
-        @test_throws BoundsError f(samplevalueindices, 1.0:100.0, 1.0:100.0,
+        @test_throws BoundsError f(samplevalueindices, samplevalueindices, 1.0:100.0, 1.0:100.0,
             1.0, 1.0)
 
-        @test_throws BoundsError f(samplevalueindices, 1.0:200.0, 1.0:100.0,
+        @test_throws BoundsError f(samplevalueindices, samplevalueindices, 1.0:200.0, 1.0:100.0,
             1.0, 1.0)
 
-        @test_throws BoundsError f(samplevalueindices, 1.0:200.0, 1.0:200.0,
+        @test_throws BoundsError f(samplevalueindices, samplevalueindices, 1.0:200.0, 1.0:200.0,
             1.0:100.0, 1.0)
 
-        @test_throws BoundsError f(samplevalueindices, 1.0:200.0, 1.0:200.0,
+        @test_throws BoundsError f(samplevalueindices, samplevalueindices, 1.0:200.0, 1.0:200.0,
             1.0:200.0, 1.0:100.0)
 
-        @test_throws BoundsError f(samplevalueindices, 1.0:300.0, 1.0:300.0,
+        @test_throws BoundsError f(samplevalueindices, samplevalueindices, 1.0:300.0, 1.0:300.0,
             1.0, 1.0)
 
-        @test_throws BoundsError f(samplevalueindices, 1.0:200.0, 1.0:300.0,
+        @test_throws BoundsError f(samplevalueindices, samplevalueindices, 1.0:200.0, 1.0:300.0,
             1.0, 1.0)
 
-        @test_throws BoundsError f(samplevalueindices, 1.0:200.0, 1.0:200.0,
+        @test_throws BoundsError f(samplevalueindices, samplevalueindices, 1.0:200.0, 1.0:200.0,
             1.0:300.0, 1.0)
 
-        @test_throws BoundsError f(samplevalueindices, 1.0:200.0, 1.0:200.0,
+        @test_throws BoundsError f(samplevalueindices, samplevalueindices, 1.0:200.0, 1.0:200.0,
             1.0:200.0, 1.0:300.0)
 
-        @test f(samplevalueindices, 1.0:200.0, ones(Float64, 200), 1.0, 1.0) ==
+        @test f(samplevalueindices, samplevalueindices, 1.0:200.0, ones(Float64, 200), 1.0, 1.0) ==
             5050.0
 
-        @test f(samplevalueindices, 1.0:200.0, ones(Float64, 200),
+        @test f(samplevalueindices, samplevalueindices, 1.0:200.0, ones(Float64, 200),
             ones(Float64,200), 1.0) == 5050.0
 
-        @test f(samplevalueindices, 1.0:200.0, ones(Float64, 200), 1.0,
+        @test f(samplevalueindices, samplevalueindices, 1.0:200.0, ones(Float64, 200), 1.0,
             ones(Float64,200)) == 5050.0
 
-        @test f(samplevalueindices, 1.0:200.0, ones(Float64, 200),
+        @test f(samplevalueindices, samplevalueindices, 1.0:200.0, ones(Float64, 200),
             ones(Float64, 200), ones(Float64,200)) == 5050.0
 
-        @test f(samplevalueindices, ones(Float64, 200), 1.0:200.0,
+        @test f(samplevalueindices, samplevalueindices, ones(Float64, 200), 1.0:200.0,
             ones(Float64, 200), ones(Float64,200)) == 5050.0
 
-        @test f(samplevalueindices, ones(Float64, 200), 1.0:200.0, 1.0, 1.0) ==
+        @test f(samplevalueindices, samplevalueindices, ones(Float64, 200), 1.0:200.0, 1.0, 1.0) ==
             5050.0
 
-        @test f(samplevalueindices, ones(Float64, 200), 1.0:200.0,
+        @test f(samplevalueindices, samplevalueindices, ones(Float64, 200), 1.0:200.0,
             ones(Float64,200), 1.0) == 5050.0
 
-        @test f(samplevalueindices, ones(Float64, 200), 1.0:200.0, 1.0,
+        @test f(samplevalueindices, samplevalueindices, ones(Float64, 200), 1.0:200.0, 1.0,
             ones(Float64,200)) == 5050.0
 
         f = BayesianNonparametricStatistics.calculateΔt

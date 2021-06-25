@@ -363,12 +363,12 @@ calculateσXt(σ::Function, v::AbstractArray{Float64}) = σ.(v)
 
 """
     calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
-        X::SamplePath, model::SDEModel)
+        X::SamplePath, model::SDEModel)::FaberSchauderExpansionWithGaussianCoefficients
     calculateposterior(Π::AbstractGaussianProcess,
         X::SamplePath, model::SDEModel)::GaussianProcess
 
-Calculates the posterior distribution Π(⋅∣X), and returns it as a
-GaussianProcess object. Uses model to determine σ.
+Calculates the posterior distribution Π(⋅∣X), and returns it as an
+object, which is a subtype of AbstractGaussianProcess. Uses model to determine σ.
 
 # Examples
 
