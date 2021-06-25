@@ -41,6 +41,8 @@ function calculatedependentfaberschauderfunctions(higestlevel::Int64)
             end
         end
     end
+    println("lengthvectors ", lengthvectors)
+    println("index ", index)
     @assert lengthvectors + 1 == index 
     return (lengthvectors, rowindices, columnindices)
 end
