@@ -21,12 +21,13 @@ function calculatedependentfaberschauderfunctions(higestlevel::Int64)
     lengthvectors = (higestlevel+1)*2^(higestlevel+1)+1 # Correct.
     rowindices = Vector{Int}(undef, lengthvectors)
     columnindices = Vector{Int}(undef, lengthvectors)
-    # Every function is dependent with itself. 
-    rowindices[1:2^(higestlevel+1)] = columnindices[1:2^(higestlevel+1)] = 1:2^(higestlevel+1)
+    # Ψ_1 is dependent with all basis functions, including itself. 
+    rowindices[1:2^(higestlevel+1)] .= 1
+    columnindices[1:2^(higestlevel+1)] = 1:2^(higestlevel+1)
     index = 2^(higestlevel+1) + 1 # point where we are in constructing rowindices and columnindices
     # psi_{j,k}=psi_{2^j+k} is dependent with
-    # psi_{j+d,(k-1)2^d+1},...,psi_{j+d, k2^d}, d\ge1.
-    for jone in 0:higestlevel-1
+    # psi_{j+d,(k-1)2^d+1},...,psi_{j+d, k2^d}, d\ge0.
+    for jone in 0:higestlevel
         twotothepowerjone = 2^jone
         for kone in 1:2^jone
             ione = twotothepowerjone+kone # other index system
