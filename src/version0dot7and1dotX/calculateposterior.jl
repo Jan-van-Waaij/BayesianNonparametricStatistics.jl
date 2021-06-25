@@ -46,6 +46,7 @@ function calculatedependentfaberschauderfunctions(higestlevel::Int64)
             end
         end
     end
+    print(lengthvectors == index - 1)
     return (lengthvectors, rowindices, columnindices)
 end
 #test written
