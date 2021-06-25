@@ -348,7 +348,7 @@ function calculategirsanovmatrix(
             samplevalueindices[columnindices[i]], ψXt[rowindices[i]], ψXt[columnindices[i]], σXt, Δt)
     end
     # Bestaat er een symmetric version van sparse? Ja en nu toepassen! Hoe je niet meer zo te doen. Je kunt Symmetric(sparse(bla)) doen, als A upper triangular. 
-    return sparse(Symmetric(sparse(rowindices, columnindices, V, d, d)))
+    return Symmetric(sparse(rowindices, columnindices, V, d, d))
 end
 
 
@@ -574,9 +574,9 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
     girsanovmatrix = calculategirsanovmatrix(Π, samplevalueindices,
         X.timeinterval, ψXt, σXt)
     oldgirsanovmatrix = oldcalculategirsanovmatrix(Π, samplevalueindices,
-       X.timeinterval, ψXt, σXt)
+        X.timeinterval, ψXt, σXt)
     return oldgirsanovmatrix, girsanovmatrix
-    println("Same matrix? ", girsanovmatrix == oldgirsanovmatrix) ## De oude en de nieuwe matrix zijn niet hetzelfde. 
+    # println("Same matrix? ", girsanovmatrix == oldgirsanovmatrix) ## De oude en de nieuwe matrix zijn niet hetzelfde. 
     # println(girsanovmatrix)
     # println(oldgirsanovmatrix)
     precisionprior = invcov(Π.distribution)
