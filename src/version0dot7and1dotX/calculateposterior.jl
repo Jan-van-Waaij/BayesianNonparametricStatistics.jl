@@ -345,14 +345,14 @@ function calculategirsanovmatrix(
     #     vcat(1:d, columnindices, rowindices)
     for i in 1:d
         V[i] = calculategirsanovmatrixelement(samplevalueindices[rowindices[i]], samplevalueindices[columnindices[i]],
-            ψXt[i], ψXt[i], σXt, Δt)
+            ψXt[rowindices[i]], ψXt[columnindices[i]], σXt, Δt)
     end
     for i in d+1:lengthvectors
         V[i] = calculategirsanovmatrixelement(samplevalueindices[rowindices[i]], 
             samplevalueindices[columnindices[i]], ψXt[rowindices[i]], ψXt[columnindices[i]], σXt, Δt)
     end
     # Bestaat er een symmetric version van sparse? Ja en nu toepassen! Hoe je niet meer zo te doen. Je kunt Symmetric(sparse(bla)) doen, als A upper triangular. 
-    return sparse(rowindices, columnindices, V, d, d)
+    return sparse(Symmetric(sparse(rowindices, columnindices, V, d, d)))
 end
 
 
