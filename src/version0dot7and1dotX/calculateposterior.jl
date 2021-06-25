@@ -300,7 +300,7 @@ function calculategirsanovmatrix(
     lengthvectors, rowindices, columnindices =
         calculatedependentfaberschauderfunctions(Π.higestlevel)
     d = length(Π)
-    numberofnonzeroelements = (2*Π.higestlevel+1)*d+2
+    numberofnonzeroelements = (2*Π.higestlevel-1)*d+2
     V = Vector{Float64}(undef, numberofnonzeroelements)
     Δt = calculateΔt(timeinterval)
     rowindices, columnindices = vcat(1:d, rowindices, columnindices),
