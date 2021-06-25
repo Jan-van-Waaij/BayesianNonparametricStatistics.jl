@@ -573,6 +573,7 @@ function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
         X.timeinterval, ψXt, σXt)
     precisionprior = invcov(Π.distribution)
     precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
+    println("Symmetric? ", issymmetric(precisionmatrixposterior))
     potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
     posteriordistributiononcoefficients = MvNormalCanon(potentialposterior, precisionmatrixposterior)
     return FaberSchauderExpansionWithGaussianCoefficients(Π.higestlevel, posteriordistributiononcoefficients)
