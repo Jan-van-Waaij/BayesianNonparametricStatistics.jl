@@ -346,7 +346,7 @@ function calculategirsanovmatrix(
             samplevalueindices[columnindices[i]], ψXt[rowindices[i]], ψXt[columnindices[i]], σXt, Δt)
     end
     # Bestaat er een symmetric version van sparse? Ja en nu toepassen! Hoe je niet meer zo te doen. Je kunt Symmetric(sparse(bla)) doen, als A upper triangular. 
-    return Symmetric(sparse(rowindices, columnindices, V, d, d))
+    return sparse(Symmetric(sparse(rowindices, columnindices, V, d, d)))
 end
 
 
