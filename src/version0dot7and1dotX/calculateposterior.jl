@@ -18,7 +18,35 @@ and for i in 1:lengthvectors (ψ_rowindices[i],ψ_columnindices[i]) have
 essentially overlapping support. For all i, rowindices[i] < columnindices[i].
 """
 function calculatedependentfaberschauderfunctions(higestlevel::Int64)
-    lengthvectors = higestlevel*2^(higestlevel+1)+1
+    lengthvectors = (higestlevel+1)*2^(higestlevel+1)+1 # Correct.
+    rowindices = Vector{Int}(undef, lengthvectors)
+    columnindices = Vector{Int}(undef, lengthvectors)
+    # Every function is dependent with itself. 
+    rowindices[1:2^(higestlevel+1)] = columnindices[1:2^(higestlevel+1)] = 1:2^(higestlevel+1)
+    index = 2^(higestlevel+1) + 1 # point where we are in constructing rowindices and columnindices
+    # psi_{j,k}=psi_{2^j+k} is dependent with
+    # psi_{j+d,(k-1)2^d+1},...,psi_{j+d, k2^d}, d\ge1.
+    for jone in 0:higestlevel-1
+        twotothepowerjone = 2^jone
+        for kone in 1:2^jone
+            ione = twotothepowerjone+kone # other index system
+            for  jtwo in jone:higestlevel
+                d = jtwo - jone
+                twotothepowerjtwo = 2^jtwo
+                for ktwo in (kone-1)*2^d+1:kone*2^d
+                    rowindices[index] = ione
+                    columnindices[index] = twotothepowerjtwo+ktwo
+                    index += 1
+                end
+            end
+        end
+    end
+    @assert lengthvectors + 1 == index 
+    return (lengthvectors, rowindices, columnindices)
+end
+
+function oldcalculatedependentfaberschauderfunctions(higestlevel::Int64)
+    lengthvectors = higestlevel*2^(higestlevel+1)+1 # Correct.
     rowindices = Vector{Int}(undef, lengthvectors)
     columnindices = Vector{Int}(undef, lengthvectors)
     index = 1
@@ -301,7 +329,35 @@ function calculategirsanovmatrix(
     lengthvectors, rowindices, columnindices =
         calculatedependentfaberschauderfunctions(Π.higestlevel)
     d = length(Π)
-    numberofnonzeroelements = (2*Π.higestlevel+1)*d+2
+    #numberofnonzeroelements = (2*Π.higestlevel+1)*d+2 # Correct.
+    V = Vector{Float64}(undef, lengthvectors)
+    Δt = calculateΔt(timeinterval)
+    # rowindices, columnindices = vcat(1:d, rowindices, columnindices),
+    #     vcat(1:d, columnindices, rowindices)
+    for i in 1:d
+        V[i] = calculategirsanovmatrixelement(samplevalueindices[i],
+            ψXt[i], ψXt[i], σXt, Δt)
+    end
+    for i in d+1:lengthvectors
+        V[i] = calculategirsanovmatrixelement(samplevalueindices[rowindices[i]], 
+            samplevalueindices[columnindices[i]], ψXt[rowindices[i]], ψXt[columnindices[i]], σXt, Δt)
+    end
+    # Bestaat er een symmetric version van sparse? Ja en nu toepassen! Hoe je niet meer zo te doen. Je kunt Symmetric(sparse(bla)) doen, als A upper triangular. 
+    return Symmetric(sparse(rowindices, columnindices, V, d, d))
+end
+
+
+function oldcalculategirsanovmatrix(
+        Π::FaberSchauderExpansionWithGaussianCoefficients,
+        samplevalueindices::Vector{BitArray{1}},
+        timeinterval::S,
+        ψXt::Vector{Array{Float64,1}},
+        σXt::T) where {S<:AbstractArray{Float64},
+            T<:Union{U, Float64} where {U<:AbstractArray{Float64}}}
+    lengthvectors, rowindices, columnindices =
+        calculatedependentfaberschauderfunctions(Π.higestlevel)
+    d = length(Π)
+    numberofnonzeroelements = (2*Π.higestlevel+1)*d+2 # Correct.
     V = Vector{Float64}(undef, numberofnonzeroelements)
     Δt = calculateΔt(timeinterval)
     rowindices, columnindices = vcat(1:d, rowindices, columnindices),
@@ -315,6 +371,7 @@ function calculategirsanovmatrix(
             samplevalueindices[rowindices[i]], samplevalueindices[columnindices[i]], ψXt[rowindices[i]],
             ψXt[columnindices[i]], σXt, Δt)
     end
+    # Bestaat er een symmetric version van sparse? Ja en nu toepassen! Hoe je niet meer zo te doen. Je kunt Symmetric(sparse(bla)) doen, als A upper triangular. 
     return sparse(rowindices, columnindices, V, d, d)
 end
 
