@@ -400,7 +400,7 @@ function calculateposterior(Π::AbstractGaussianProcess,
     precisionprior = invcov(Π.distribution)
     girsanovvector = calculategirsanovvector(lengthΠ, X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(lengthΠ, X.timeinterval, ψXt, σXt)
-    precisionmatrixposterior = Matrix(girsanovmatrix) + precisionprior
+    precisionmatrixposterior = girsanovmatrix + precisionprior
     potentialposterior = girsanovvector + precisionprior * mean(Π.distribution)
     posteriordistributiononcoefficients = MvNormalCanon(potentialposterior, precisionmatrixposterior)
     return GaussianProcess(Π.basis, posteriordistributiononcoefficients)
@@ -436,7 +436,7 @@ function calculateposteriorcoefficients(d::GaussianVector,
     girsanovvector = calculategirsanovvector(lengthΠ, X.samplevalues, ψXt, σXt)
     girsanovmatrix = calculategirsanovmatrix(lengthΠ, X.timeinterval, ψXt, σXt)
     precisionmatrixposterior = girsanovmatrix + precisionprior
-    potentialposterior = girsanovvector + precisionprior * Vector(mean(Π.distribution))
+    potentialposterior = girsanovvector + precisionprior * mean(Π.distribution)
     meanposterior =  covariancematrixprior * potentialposterior
     posteriordistribution = GaussianVector(meanposterior, 
         precisionmatrixposterior^(-0.5))
