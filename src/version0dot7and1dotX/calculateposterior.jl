@@ -240,6 +240,7 @@ postΠ = calculateposterior(Π, X, model)
 ```
 """
 calculateposterior(Π, X, model::SDEModel) = calculateposterior(Π, X, model.σ)
+calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients, X, model::SDEModel) = calculateposterior(Π, X, model.σ)
 function calculateposterior(Π, X, σ)
     σXt = calculateσXt(σ, X.samplevalues[1:end-1])
     ψXt = [f.(X.samplevalues[1:end-1]) for f in Π.basis]

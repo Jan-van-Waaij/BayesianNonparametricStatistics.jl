@@ -16,14 +16,14 @@ abstract type AbstractSamplePath end
 Tests whether a vector of numbers is strictly increasing. Is internal to
 NonparametricBayesForDiffusions.
 """
-function isincreasing(x::S) where S<:AbstractArray{T} where T <: Number
+function isincreasing(x)
   for i in 1:length(x)-1
     x[i+1] <= x[i] && return false
   end
   return true
 end
 
-isincreasing(x::S) where S<:AbstractRange{T} where T <: Number = step(x) > 0
+isincreasing(x::AbstractRange) = step(x) > 0
 
 """
     SamplePath(timeinterval::S, samplevalues::T) where
