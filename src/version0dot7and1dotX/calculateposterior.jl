@@ -50,99 +50,37 @@ end
 
 """
     calculategirsanovmatrixelement(ψ1Xt, ψ2Xt, σ, Δt)
-    calculategirsanovmatrixelement(samplevalueindices1::BitArray{1},
-        samplevalueindices2::BitArray{1}, ψ1Xt, ψ2Xt, σ, Δt)
+    calculategirsanovmatrixelement(samplevalueindices1, samplevalueindices2, ψ1Xt, ψ2Xt, σ, Δt)
 
 Internal function, not exported!
 
-Where ψ1Xt, ψ2Xt are AbstractArray{Float64}, and σ and Δt are either an
-AbstractArray{Float64} or a Float64.
+Where ψ1Xt, ψ2Xt are arrays, and σ and Δt are either arrays or numbers.
 
 Let ψ_a and ψ_b denote two basis elements.
 calculategirsanovmatrixelement calculates the (a,b) element of the Girsanov
 matrix defined by int_0^T ψ_a(X_t)ψ_b(X_t)/(σ^2(X_t)) dt, where ψ_a is given
-by ψ1Xt (already evaluated in X) and ψ_b by ψ2Xt (already evaluated in X).
+by ψ1Xt (already evaluated in ψ_a) and ψ_b by ψ2Xt (already evaluated in ψ_b).
 
-The value samplevalueindices1[i] = false should correspond to Ψ1Xt[i]==0.0.
+samplevalueindices1[i] == false should correspond to Ψ1Xt[i] == 0.0.
 Similar for samplevalueindices2 and Ψ2Xt. 
 """
-function calculategirsanovmatrixelement(
-        ψ1Xt::S,
-        ψ2Xt::T,
-        σ::Float64,
-        Δt::Float64) where {S<:AbstractArray{Float64},
-            T<:AbstractArray{Float64}}
-    return Δt * sum(ψ1Xt .* ψ2Xt) / (σ^2)
-end
+calculategirsanovmatrixelement(ψ1Xt, ψ2Xt, σXt, Δt) = sum(Δt .* ψ1Xt .* ψ2Xt ./ (σXt.^2))
 #test written
-
-function calculategirsanovmatrixelement(
-        ψ1Xt::R,
-        ψ2Xt::S,
-        σ::Float64,
-        Δt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
-            T<:AbstractArray{Float64}}
-    return sum(Δt .* ψ1Xt .* ψ2Xt) / (σ^2)
-end
+calculategirsanovmatrixelement(ψ1Xt, ψ2Xt, σXt, Δt::Number) = Δt * sum(ψ1Xt .* ψ2Xt ./ (σXt.^2))
 #test written
-
-function calculategirsanovmatrixelement(
-        ψ1Xt::R,
-        ψ2Xt::S,
-        σXt::T,
-        Δt::Float64) where {R<:AbstractArray{Float64},
-            S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
-    return Δt * sum(ψ1Xt .* ψ2Xt ./ (σXt.^2))
-end
+calculategirsanovmatrixelement(ψ1Xt, ψ2Xt, σXt::Number, Δt) = sum(Δt .* ψ1Xt .* ψ2Xt) / (σXt^2)
 #test written
-
-function calculategirsanovmatrixelement(
-        ψ1Xt::Q,
-        ψ2Xt::R,
-        σXt::S,
-        Δt::T) where {Q<:AbstractArray{Float64}, R<:AbstractArray{Float64},
-            S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
-    return sum(Δt .* ψ1Xt .* ψ2Xt ./ (σXt.^2))
-end
+calculategirsanovmatrixelement(ψ1Xt, ψ2Xt, σXt::Number, Δt::Number) = Δt * sum(ψ1Xt .* ψ2Xt) / (σXt^2)
 #test written
-
-function calculategirsanovmatrixelement(
-        samplevalueindices1::BitArray{1},
-        samplevalueindices2::BitArray{1},
-        ψ1Xt::S,
-        ψ2Xt::T,
-        σ::Float64,
-        Δt::Float64) where {S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
-# what am I doing here? 
-    samplevalueindices = samplevalueindices1 .& samplevalueindices2
+function calculategirsanovmatrixelement(samplevalueindices1, samplevalueindices2, ψ1Xt, ψ2Xt, σXt, Δt)
+    samplevalueindices = samplevalueindices1 .& samplevalueindices2    
     filteredψ1Xt = ψ1Xt[samplevalueindices]
     filteredψ2Xt = ψ2Xt[samplevalueindices]
-    return Δt * sum(filteredψ1Xt .* filteredψ2Xt) / (σ^2)
-end
-
-function calculategirsanovmatrixelement(
-        samplevalueindices1::BitArray{1},
-        samplevalueindices2::BitArray{1},
-        ψ1Xt::R,
-        ψ2Xt::S,
-        σ::Float64,
-        Δt::T) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
-            T<:AbstractArray{Float64}}
-    samplevalueindices = samplevalueindices1 .& samplevalueindices2
+    filteredσXt = σXt[samplevalueindices]
     filteredΔt = Δt[samplevalueindices]
-    filteredψ1Xt = ψ1Xt[samplevalueindices]
-    filteredψ2Xt = ψ2Xt[samplevalueindices]
-    return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt) / (σ^2)
+    return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt ./ (filteredσXt.^2))
 end
-
-function calculategirsanovmatrixelement(
-        samplevalueindices1::BitArray{1},
-        samplevalueindices2::BitArray{1},
-        ψ1Xt::R,
-        ψ2Xt::S,
-        σXt::T,
-        Δt::Float64) where {R<:AbstractArray{Float64}, S<:AbstractArray{Float64},
-            T<:AbstractArray{Float64}}
+function calculategirsanovmatrixelement(samplevalueindices1, samplevalueindices2, ψ1Xt, ψ2Xt, σXt, Δt::Number)
     samplevalueindices = samplevalueindices1 .& samplevalueindices2
     filteredψ1Xt = ψ1Xt[samplevalueindices]
     filteredψ2Xt = ψ2Xt[samplevalueindices]
@@ -150,37 +88,31 @@ function calculategirsanovmatrixelement(
     return Δt * sum(filteredψ1Xt .* filteredψ2Xt ./
         (filteredσXt.^2))
 end
-
-function calculategirsanovmatrixelement(
-        samplevalueindices1::BitArray{1},
-        samplevalueindices2::BitArray{1},
-        ψ1Xt::Q,
-        ψ2Xt::R,
-        σXt::S,
-        Δt::T) where {Q<:AbstractArray{Float64}, R<:AbstractArray{Float64},
-            S<:AbstractArray{Float64}, T<:AbstractArray{Float64}}
-    samplevalueindices = samplevalueindices1 .& samplevalueindices2    
+function calculategirsanovmatrixelement(samplevalueindices1, samplevalueindices2, ψ1Xt, ψ2Xt, σXt::Number, Δt)
+    samplevalueindices = samplevalueindices1 .& samplevalueindices2
+    filteredΔt = Δt[samplevalueindices]
     filteredψ1Xt = ψ1Xt[samplevalueindices]
     filteredψ2Xt = ψ2Xt[samplevalueindices]
-    filteredσXt = σXt[samplevalueindices]
-    filteredΔt = Δt[samplevalueindices]
-    return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt ./ (
-        filteredσXt.^2))
+    return sum(filteredΔt .* filteredψ1Xt .* filteredψ2Xt) / (σXt^2)
+end
+function calculategirsanovmatrixelement(samplevalueindices1, samplevalueindices2, ψ1Xt, ψ2Xt, σXt::Number, Δt::Number)
+    samplevalueindices = samplevalueindices1 .& samplevalueindices2
+    filteredψ1Xt = ψ1Xt[samplevalueindices]
+    filteredψ2Xt = ψ2Xt[samplevalueindices]
+    return Δt * sum(filteredψ1Xt .* filteredψ2Xt) / (σXt^2)
 end
 
 """
-    calculateΔt(timeinterval::AbstractRange{Float64}) = step(timeinterval)
-    calculateΔt(timeinterval::AbstractArray{Float64}) = timeinterval[2:end] -
-        timeinterval[1:end-1]
+    calculateΔt(timeinterval::AbstractRange) = step(timeinterval)
+    calculateΔt(timeinterval) = timeinterval[2:end] - timeinterval[1:end-1]
 
 Internal function, not exported!
 
-Calculated Δt, returns a Float64, when timeinterval is a range object, and
-otherwise the increments of the timeinterval vector.
+Calculates Δt. It returns a number when timeinterval is a range object 
+and an array of increments of the timeinterval vector otherwise.
 """
-calculateΔt(timeinterval::AbstractRange{Float64}) = step(timeinterval)
-calculateΔt(timeinterval::AbstractArray{Float64}) = timeinterval[2:end] -
-    timeinterval[1:end-1]
+calculateΔt(timeinterval::AbstractRange) = step(timeinterval)
+calculateΔt(timeinterval) = timeinterval[2:end] - timeinterval[1:end-1]
 # Test written.
 
 # calculategirsanovmatrix methods:
@@ -396,7 +328,7 @@ postΠ = calculateposterior(Π, X, model)
 ```
 """
 function calculateposterior(Π::AbstractGaussianProcess,
-        X::SamplePath, model::SDEModel)::GaussianProcess
+        X::SamplePath, model::SDEModel)
     σXt = calculateσXt(model.σ, X.samplevalues[1:end-1])
     ψXt = [f.(X.samplevalues[1:end-1]) for f in Π.basis]
     lengthΠ = length(Π)
@@ -407,14 +339,13 @@ function calculateposterior(Π::AbstractGaussianProcess,
     potentialposterior = girsanovvector + precisionprior * mean(Π.distribution)
     posteriordistributiononcoefficients = MvNormalCanon(potentialposterior, precisionmatrixposterior)
     return GaussianProcess(Π.basis, posteriordistributiononcoefficients)
-end # Seems good. 
+end 
 
-# Check deze functie. 
 function calculateposterior(Π::FaberSchauderExpansionWithGaussianCoefficients,
         X::SamplePath, model::SDEModel)
     samplevaluesmod1 = mod.(X.samplevalues[1:end-1], 1.0)
     σXt = calculateσXt(model.σ, X.samplevalues[1:end-1])
-    ψXt = [f.(X.samplevalues[1:end-1]) for f in Π.basis]
+    ψXt = [ψ.(X.samplevalues[1:end-1]) for ψ in Π.basis]
     # You only need to use the values which are in the support of the function.
     samplevalueindices = [Π.leftboundssupport[i] .≤
         samplevaluesmod1 .≤ Π.rightboundssupport[i] for i in 1:length(Π)]
