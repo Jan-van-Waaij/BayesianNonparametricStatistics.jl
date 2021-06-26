@@ -6,7 +6,7 @@
 Subtypes: GaussianProcess and FaberSchauderExpansionWithGaussianCoefficients.
 Supertype: Any
 
-Both subtypes represent a Gaussian process represented as a series expansion
+Both subtypes represent a Gaussian process as a series expansion
 in a basis of functions, where the vector of functions is multivariate normally
 distributed. 
 
@@ -26,7 +26,7 @@ with distribution 'distribution' of type GaussianVector or a subtype of Abstract
 (from the Distributions.jl package) and a vector of functions,
 the basis of the function space. For the use of a Gaussian process expanded in 
 Faber-Schauder functions up to level j, we recommend using 
-FaberSchauderExpansionWithGaussianCoefficients, as this makes efficient use of
+FaberSchauderExpansionWithGaussianCoefficients, as this makes efficiently use of
 the sparsity structure of Faber-Schauder functions.
 
 See also: FaberSchauderExpansionWithGaussianCoefficients, AbstractGaussianProcess
@@ -65,6 +65,7 @@ element of the second vector is the right bound of the support of
 i-th Faber-Schauder basis function.
 """
 function calculateboundssupport(higestlevel::Int)
+    higestlevel ≥ 0 || throw(AssertionError("higestlevel should be positive."))
     lengthvector = 2^(higestlevel+1)
     leftboundsupport = Vector{Float64}(undef, lengthvector)
     rightboundsupport = Vector{Float64}(undef, lengthvector)
@@ -120,7 +121,7 @@ Constructors:
     FaberSchauderExpansionWithGaussianCoefficients(higestlevel, distribution)
     FaberSchauderExpansionWithGaussianCoefficients(standarddeviationsperlevel::Vector{Float64})
 
-The user is not allowed to set basis, which is calculated from the input and 
+The user is not allowed to set a basis, which the constructor calculates from the input and 
 is by its very definition a Faber-Schauder basis. The length of distribution 
 should be equal to 2^(higestlevel+1). The second constructor defines a Gaussian 
 process with Faber-Schauder basis with independent coefficients with 
@@ -197,45 +198,42 @@ end
     length(Π::AbstractGaussianProcess)
     length(Π::FaberSchauderExpansionWithGaussianCoefficients)
 
-Returns the number of basis functions == length of the distribution of the
-coefficients. So for a FaberSchauderExpansionWithGaussianCoefficients object it
-this is equal to 2^(higestlevel+1).
+length returns the number of basis functions, which is equal to the length of the distribution of the
+coefficients, which is also equal to the number of coefficients. 
+For a FaberSchauderExpansionWithGaussianCoefficients object, the length is equal to 2^(higestlevel+1).
 
 # Example
 ```julia
 Π = GaussianProcess([sin, cos], MvNormal([1.,1.]))
 length(Π)
 #
-Π = FaberSchauderExpansionWithGaussianCoefficients([2.0^j for j in 0:3])
-length(Π)
+Π = FaberSchauderExpansionWithGaussianCoefficients([2.0^(-0.5*j) for j in 0:3])
+length(Π) # == 2^4 == 16.
 ```
 """
 length(Π::AbstractGaussianProcess)=length(Π.basis)
 length(Π::FaberSchauderExpansionWithGaussianCoefficients) = 2^(Π.higestlevel+1)
 
 """
-    sumoffunctions(vectoroffunctions::Vector{<:Function},
-        vectorofscalars::Vector{Float64})
+    sumoffunctions(vectoroffunctions::AbstractArray{<:Function},
+        vectorofscalars::AbstractArray{<:Number})
 
-Calculates the 'inner product' of the function vector and the scalar vector. In
-other words the sum of the functions weigthed by vectorofscalars. Returns a
+sumoffunctions calculates the 'inner product' of the function vector and the scalar vector. In
+other words, the sum of the functions weighted by vectorofscalars. It returns a
 function.
 """
-function sumoffunctions(vectoroffunctions::S,
-    vectorofscalars::T) where {S<:AbstractArray{U} where U<:Function,
-    T<:AbstractArray{Float64}}
+function sumoffunctions(vectoroffunctions::AbstractArray{<:Function},
+    vectorofscalars::AbstractArray{<:Number})
   n = length(vectoroffunctions)
   n == length(vectorofscalars) || throw(AssertionError("The vector of functions and the vector
     of scalars should be of equal length"))
   return x -> sum(vectorofscalars[k]*vectoroffunctions[k](x) for k in 1:n)
 end
 
-# Extends Base.rand to objects which are subtypes of
-# AbstractGaussianProcess. Returns a function.
 """
     rand(Π::AbstractGaussianProcess)
 
-Returns a random function, where the coefficients have distribution Π.distribution
+rand returns a random function, where the coefficients have distribution Π.distribution
 and the basis functions are defined in Π.basis.
 
 # Example
@@ -249,14 +247,14 @@ f = rand(Π)
 """
 function rand(Π::AbstractGaussianProcess)
   Z = rand(Π.distribution)
-  return sumoffunctions(Π.basis,Z)
+  return sumoffunctions(Π.basis, Z)
 end
 
-# Extend Base.mean to GaussianProcess objects.
+# Extends Base.mean to GaussianProcess objects.
 """
     mean(Π::AbstractGaussianProcess)
 
-Calculates the mean of the Gaussian process. Returns a function.
+mean calculates the mean of the Gaussian process. It returns a function.
 
 #Examples
 

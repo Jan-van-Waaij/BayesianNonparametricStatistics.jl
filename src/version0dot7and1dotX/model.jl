@@ -3,7 +3,9 @@
 """
     abstract type AbstractModel end
 
-Implements a statistical model. Has so far only SDEModel as subtype.
+subtype: SDEModel
+
+AbstractModel is a supertype for statistical models.
 """
 abstract type AbstractModel end
 
@@ -24,15 +26,14 @@ abstract type AbstractModel end
         S<:Real, T<:Real}
 ```
 
-Implements an SDE model with begin value X_0=beginvalue (at time zero) variance
+SDEModel implements an SDE model with begin value X_0=beginvalue (at time zero) variance
 σ, up to end time endtime. The SDE is discretised with precision Δ.
 
 # Warning
-It is assumed that
-for every b under consideration, the laws of dX_t=b(X_t)dt+σ(X_t)dW_t are
+It is assumed that for every b under consideration, the laws of dX_t=b(X_t)dt+σ(X_t)dW_t are
 equivalent.
 
-# Example
+# Examples
 
 ```julia
 SDEModel(1.0, 0.0, 10.0, 0.01)

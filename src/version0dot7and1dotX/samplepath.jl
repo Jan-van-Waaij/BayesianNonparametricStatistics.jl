@@ -24,13 +24,13 @@ function isstrictlyincreasing(x)
   return true
 end
 
-isstrictlyincreasing(x::AbstractRange) = (println("hi"); step(x) > 0)
+isstrictlyincreasing(x::AbstractRange) = step(x) > 0
 
 """
     SamplePath(timeinterval::S, samplevalues::T) where
         {S<:AbstractVector{Float64}, T<:AbstractVector{Float64}}
 
- Implements a continuous samplepath where the timeinterval is not necessarily
+ SamplePath implements a continuous samplepath where the timeinterval is not necessarily
  equally spaced. Sample value samplevalues[k] is the value of the process at
  time timeinterval[k]. timeinterval is a strictly increasing vector. timeinterval and
  samplevalues are of equal length.
@@ -102,7 +102,7 @@ Returns the length of the vector timeinterval == length vector samplevalues.
 # Examples
 ```julia
 X = SamplePath([0.,1.,2.], [3.,5., -1.])
-length(X)
+length(X) # == 3
 ```
 
 ```julia
@@ -117,12 +117,22 @@ Base.length(X::SamplePath)=length(X.timeinterval)
 """
     Base.iterate(X::SamplePath, state=1)
 
-Iterate over the sample values.     
+Iterate over the sample values.
+
+# Example
+```julia
+X = SamplePath([1.0, 2.0, 3.0], x->x^2)
+for value in X
+    println(value)
+end
+# Or in the reverse
+for value in Iterators.Reverse(X)
+    println(value)
+end 
+```  
 """
 Base.iterate(X::SamplePath, state=1) = state > length(X) ? nothing : (X.samplevalues[state], state + 1)
-
-Base.iterate(rX::Base.Iterators.Reverse{SamplePath{S,T}}, state=length(rX)) where {S<:AbstractVector{Float64},
-        T<:AbstractVector{Float64}} = state < 1 ? nothing : (rX.itr.samplevalues[state], state - 1) 
+Base.iterate(rX::Base.Iterators.Reverse{SamplePath{S,T}}, state=length(rX)) where {S, T} = state < 1 ? nothing : (rX.itr.samplevalues[state], state - 1) 
 
 """
     Base.eltype(::Type{SamplePath})
@@ -134,21 +144,21 @@ Base.eltype(::Type{SamplePath{S,T}}) where {S,T} = Float64
 """
     Base.getindex(X::SamplePath, i::Int)
 
-Returns the i-th observation of the samplepath, that is X.samplevalues[i].
+Returns the i-th observation of the samplepath, which is X.samplevalues[i].
 """
 Base.getindex(X::SamplePath, i::Int) = X.samplevalues[i]
 
 """
     Base.firstindex(X::SamplePath)
 
-The first index of SamplePath is 1.
+The first index of the SamplePath is 1.
 """
 Base.firstindex(X::SamplePath) = 1
 
 """
     Base.lastindex(X::SamplePath)
 
-The last index of SamplePath is length(X).
+The last index of the SamplePath is length(X).
 """
 Base.lastindex(X::SamplePath) = length(X)
 
