@@ -24,7 +24,7 @@ function isstrictlyincreasing(x)
   return true
 end
 
-isstrictlyincreasing(x::AbstractRange) = step(x) > 0
+isstrictlyincreasing(x::AbstractRange) = (println("hi"); step(x) > 0)
 
 """
     SamplePath(timeinterval::S, samplevalues::T) where
@@ -92,7 +92,7 @@ X = SamplePath(t, sinpi)
 step(X) == step(t)
 ```
 """
-Base.step(X::SamplePath{<:AbstractRange}) = (println("hi"); Base.step(X.timeinterval))
+Base.step(X::SamplePath{<:AbstractRange}) = Base.step(X.timeinterval)
 
 """
     Base.length(X::SamplePath)
