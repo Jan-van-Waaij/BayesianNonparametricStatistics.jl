@@ -482,7 +482,7 @@ sqrttwo = sqrt(2.0)
         @test abs(StatsBase.var(x)-2*a^2)<0.1
 
         x = 0.0:0.1:1.0
-        y = sumoffunctions([sin, cos], [1., 1.]).(x)
+        y = BayesianNonparametricStatistics.sumoffunctions([sin, cos], [1., 1.]).(x)
         z = map(x-> sin(x)+cos(x), x)
         @test y ≈ z
 
@@ -551,11 +551,11 @@ sqrttwo = sqrt(2.0)
             end 
         end 
 
-        @test_throws AssertionError sumoffunctions([sin], [1.0,2.0])
+        @test_throws AssertionError BayesianNonparametricStatistics.sumoffunctions([sin], [1.0,2.0])
 
         vectoroffunctions = [sin, x -> cos(x+π/2)]
         vectorofscalars = [1.0, 1.0]
-        f = sumoffunctions(vectoroffunctions, vectorofscalars)
+        f = BayesianNonparametricStatistics.sumoffunctions(vectoroffunctions, vectorofscalars)
         x = 0.0:0.01:1.0
         y = f.(x)
         @test maximum(abs.(y)) < 0.001
