@@ -15,7 +15,7 @@ AbstractSDE, SDE,
 GaussianVector,
 # gaussianprocess.jl defines:
 AbstractGaussianProcess, GaussianProcess,
-FaberSchauderExpansionWithGaussianCoefficients, sumoffunctions,
+FaberSchauderExpansionWithGaussianCoefficients,
 # defined in both gaussianvectors.jl and gaussianprocess.jl:
 mean, var,
 # calculateposterior.jl defines:

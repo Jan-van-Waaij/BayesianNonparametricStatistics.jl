@@ -218,6 +218,8 @@ length(Π::FaberSchauderExpansionWithGaussianCoefficients) = 2^(Π.higestlevel+1
     sumoffunctions(vectoroffunctions::AbstractArray{<:Function},
         vectorofscalars::AbstractArray{<:Number})
 
+Internal function, not exported.
+
 sumoffunctions calculates the 'inner product' of the function vector and the scalar vector. In
 other words, the sum of the functions weighted by vectorofscalars. It returns a
 function.

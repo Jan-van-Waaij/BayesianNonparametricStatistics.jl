@@ -215,7 +215,8 @@ calculateσXt(σ, v) = σ.(v)
 
 Calculates the posterior distribution Π(⋅∣X) and returns a FaberSchauderExpansionWithGaussianCoefficients
 object when Π is a FaberSchauderExpansionWithGaussianCoefficients-object. Otherwise, it returns a GaussianProcess-object. 
-Uses model to determine σ.
+Uses model to determine σ. When Π is a FaberSchauderExpansionWithGaussianCoefficients-object, then calculateposterior 
+makes use of the sparsity structure of the Faber-Schauder basis.
 
 # Examples
 
