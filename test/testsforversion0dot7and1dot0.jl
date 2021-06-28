@@ -42,13 +42,27 @@ sqrttwo = sqrt(2.0)
         @test_throws ArgumentError SDEModel(sin, 0.0, -1.0, -0.1)
         @test_throws ArgumentError SDEModel(1.0, 0.0, 0.0, 0.1)
         @test_throws ArgumentError SDEModel(1.0, 0.0, 10.0, 0.0)
-    end
+        @test_throws ArgumentError SDEModel(1.0, 0.0, 0.0, 0.0)
+    end # perfect
 
     #Test functions are correct, complete and the same in both versions. 
     @testset "samplepath.jl" begin
         @test supertype(SamplePath) == AbstractSamplePath
 
         @test supertype(AbstractSamplePath) == Any
+
+        @test BayesianNonparametricStatistics.isstrictlyincreasing(0:0.1:1)
+        @test !BayesianNonparametricStatistics.isstrictlyincreasing(0:-0.1:-1.0)
+        @test !BayesianNonparametricStatistics.isstrictlyincreasing([0.0, 0.1, 0.2, 0.1, 0.3, 0.4])
+        @test !BayesianNonparametricStatistics.isstrictlyincreasing([0.0, -0.1, 0.0, 0.2, 0.3])
+        @test !BayesianNonparametricStatistics.isstrictlyincreasing([1, 2, 3, 4, -10, 11, 12])
+        @test BayesianNonparametricStatistics.isstrictlyincreasing([1, 2, 3, 4, 500, 600, 2000, 10000])
+        @test BayesianNonparametricStatistics.isstrictlyincreasing([1.0, 2.0, 2.00000001, 2.00000002])
+        @test !BayesianNonparametricStatistics.isstrictlyincreasing([2.0,2.0,2.0,2.0,2.0])
+        @test !BayesianNonparametricStatistics.isstrictlyincreasing([2.0,2.0,2.1,2.2,2.3])
+        @test !BayesianNonparametricStatistics.isstrictlyincreasing([2.0,2.1,2.2,2.2,2.3])
+        @test !BayesianNonparametricStatistics.isstrictlyincreasing([2.1,2.2,2.3,2.4,2.4])
+        @test !BayesianNonparametricStatistics.isstrictlyincreasing([2.0,2.0, 3.0, 3.0001])
 
         X = SamplePath(0.0:0.1:1.0, sin)
         @test X.timeinterval == 0.0:0.1:1.0
@@ -61,7 +75,7 @@ sqrttwo = sqrt(2.0)
 
         X = SamplePath(0.0:0.1:1.0, x->2*x)
         @test X.timeinterval == 0.0:0.1:1.0
-        @test X.samplevalues == collect(0.0:0.2:2.0)
+        @test X.samplevalues == 0.0:0.2:2.0
 
         @test step(X) == 0.1
         @test length(X) == 11
@@ -77,37 +91,40 @@ sqrttwo = sqrt(2.0)
         @test X.samplevalues == [1.0, 9.0, 25.0, 81.0]
 
         X = SamplePath(collect(-2.0:0.01:2.0), sin)
-        X.timeinterval == collect(-2.0:0.01:2.0)
-        X.samplevalues == sin.(collect(-2.0:0.01:2.0))
+        X.timeinterval == -2.0:0.01:2.0
+        X.samplevalues == sin.(-2.0:0.01:2.0)
 
         X = SamplePath(-2.0:0.01:2.0, sin)
-        X.timeinterval == collect(-2.0:0.01:2.0)
-        X.samplevalues == sin.(collect(-2.0:0.01:2.0))
+        X.timeinterval == -2.0:0.01:2.0
+        X.samplevalues == sin.(-2.0:0.01:2.0)
 
         X = SamplePath(0.0:0.1:2π, sin)
         @test length(X) == length(0.0:0.1:2π)
 
         @test_throws DimensionMismatch SamplePath(0.0:2.0, [1.0, 2.0])
+        @test_throws DimensionMismatch SamplePath(0.0:2.0, [1.0, 2.0, 4.0, 5.0])
 
         @test_throws ArgumentError SamplePath(0.0:-0.1:-0.1, [0.0, 2.0])
 
         @test_throws DimensionMismatch SamplePath([0.1, 2.0],[3.0])
+        @test_throws DimensionMismatch SamplePath([0.1, 2.0],Float64[])
+        @test_throws DimensionMismatch SamplePath(Float64[],[3.0])
 
         @test_throws ArgumentError SamplePath([0.1, 2.0, 1.0], [1.0,2.0,3.0])
+        @test_throws ArgumentError SamplePath(0.0:-1.0:-10.0, rand(11))
 
-        @test BayesianNonparametricStatistics.isstrictlyincreasing(0:0.1:1)
-        @test !BayesianNonparametricStatistics.isstrictlyincreasing(0:-0.1:-1.0)
-        @test !BayesianNonparametricStatistics.isstrictlyincreasing([0.0, 0.1, 0.2, 0.1, 0.3, 0.4])
-        @test !BayesianNonparametricStatistics.isstrictlyincreasing([0.0, -0.1, 0.0, 0.2, 0.3])
-        @test !BayesianNonparametricStatistics.isstrictlyincreasing([1, 2, 3, 4, -10, 11, 12])
-        @test BayesianNonparametricStatistics.isstrictlyincreasing([1, 2, 3, 4, 500, 600, 2000, 10000])
-        @test BayesianNonparametricStatistics.isstrictlyincreasing([1.0, 2.0, 2.00000001, 2.00000002])
-        @test !BayesianNonparametricStatistics.isstrictlyincreasing([2.0,2.0,2.0,2.0,2.0])
-        @test !BayesianNonparametricStatistics.isstrictlyincreasing([2.0,2.0,2.1,2.2,2.3])
-        @test !BayesianNonparametricStatistics.isstrictlyincreasing([2.0,2.1,2.2,2.2,2.3])
-        @test !BayesianNonparametricStatistics.isstrictlyincreasing([2.1,2.2,2.3,2.4,2.4])
-        @test !BayesianNonparametricStatistics.isstrictlyincreasing([2.0,2.0, 3.0, 3.0001])
+        @test step(SamplePath(0.0:0.2:1.0, sin)) == 0.2
+        @test step(SamplePath(0.0:10.0:1000.0, 0.0:100.0)) == 10.0
 
+        for i in 1:10 
+            @test length(SamplePath(1.0:i, rand(i))) == i 
+        end 
+
+        @test length(SamplePath([1.0, 2.0, 4.0, 5.0, 16.0, 30.0, 34.0, 100.0], x->x^2)) == 8
+        @test length(SamplePath([1.0, 2.0, 4.0, 5.0, 16.0, 30.0, 34.0, 100.0], [90.0, 56.0, 49.0, 25.0, 6.0, 10.0, 19.0, 1000000.0])) == 8        
+
+        t = 0.0:0.1:2π
+        X = SamplePath(t, sin)
         @test [value for value in X] == X.samplevalues
         @test try [value for value in X]
             true
@@ -128,16 +145,22 @@ sqrttwo = sqrt(2.0)
         @test eltype(typeof(X)) == Float64
         @test eltype(typeof(Y)) == Float64
 
-        @test X[1] == sin(0.0)
-        @test X[11] == sin(1.0)
-    end
+        @test X[begin] == sin(0.0)
+        @test X[end] == sin(t[end])
+
+        X = SamplePath(0:100.0, 0:100.0)
+        @test sum(X) == 5050
+        @test X[begin] == 0.0
+        @test X[end] == 100.0
+        @test [value for value in Iterators.Reverse(X)][1] == 100.0
+    end # Perfect
 
     #Test functions are correct, complete and the same in both versions. 
     @testset "basisfunctions.jl" begin
         @test_throws AssertionError fourier(-1)
         @test_throws AssertionError fourier(-10)
 
-        numberofbasisfunctionstested = 100
+        numberofbasisfunctionstested = 200
         numberoffaberschauderlevelstested = convert(Int64, round(log2(numberofbasisfunctionstested), RoundUp)) - 1
         numberoffourierfunctionstested = numberofbasisfunctionstested
         #The Fourier functions are orthogonal.
@@ -224,6 +247,8 @@ sqrttwo = sqrt(2.0)
                 @test abs(fourier(k)((2m+1)/k)+sqrt(2)) < 10.0^-5
             end
         end
+        
+        # tests for Faber-Schauder functions
         #
         @test_throws AssertionError faberschauder(-1, 1)
         @test_throws AssertionError faberschauder(-3, 1)
@@ -234,7 +259,9 @@ sqrttwo = sqrt(2.0)
         # # Below we test Faber-Schauder functions on their mathematical properities, up
         # # to level numberoffaberschauderlevelstested, defined below.
         t = 0.:2.0^(-numberoffaberschauderlevelstested-2):1.0
-
+        # They integrate to 2^(-j-1)
+        psionevalues = faberschauderone.(t[1:end-1])
+        @test abs(step(t)*sum(psionevalues)-2.0^-1) < 10.0^-3
         # Faber-Schauder functions are level-wise orthogonal, for levels j≥1.
         for j in 1:numberoffaberschauderlevelstested
             for k in 1:2^j-1
@@ -278,8 +305,56 @@ sqrttwo = sqrt(2.0)
             end
         end
 
+        #psi_{j,k} are zero for 0.0≤x≤(k-1)*2.0^-j and k*2.0^-j ≤x≤1.0
+        x = 0.:2.0^(-numberoffaberschauderlevelstested-3):1.0
+        for j in 1:numberoffaberschauderlevelstested
+            for k in 1:2^j
+                t_left = 0.:2.0^(-numberoffaberschauderlevelstested-3):(k-1)*2.0^-j
+                t_right = k*2.0^-j:2.0^(-numberoffaberschauderlevelstested-3):1.0
+                ψjk = faberschauder(j,k)
+                @test all(ψjk.(t_left) .== 0.0)
+                @test all(ψjk.(t_right) .== 0.0)  
+            end
+        end
+
+        # ψ_1 is 1/2 at 0.25 and 0.75
+        # ψ_{j,k} is 1/2 at (k-1+1/4)*2.0^-j and at (k-1+3/4)*2^-j.
+        @test faberschauderone(0.25) == 1/2
+        @test faberschauderone(0.75) == 1/2
+        for j in 0:numberoffaberschauderlevelstested
+            for k in 1:2^j 
+                ψjk = faberschauder(j,k)
+                @test ψjk((k-1+1/4)*2.0^-j) == 1/2
+                @test ψjk((k-1+3/4)*2.0^-j) == 1/2
+            end 
+        end 
+
+        # ψ_1 is 1/4 at 3/8 and 5/8
+        # ψ_{j,k} is 1/4 at (k-1+1/8)*2.0^-j and at (k-1+7/8)*2^-j.
+        @test faberschauderone(3/8) == 1/4
+        @test faberschauderone(5/8) == 1/4
+        for j in 0:numberoffaberschauderlevelstested
+            for k in 1:2^j 
+                ψjk = faberschauder(j,k)
+                @test ψjk((k-1+1/8)*2.0^-j) == 1/4
+                @test ψjk((k-1+7/8)*2.0^-j) == 1/4
+            end 
+        end 
+
+        # ψ_1 is 3/4 at 1/8 and 7/8
+        # ψ_{j,k} is 1/4 at (k-1+3/8)*2.0^-j and at (k-1+5/8)*2^-j.
+        @test faberschauderone(1/8) == 3/4
+        @test faberschauderone(7/8) == 3/4
+        for j in 0:numberoffaberschauderlevelstested
+            for k in 1:2^j 
+                ψjk = faberschauder(j,k)
+                @test ψjk((k-1+3/8)*2.0^-j) == 3/4
+                @test ψjk((k-1+5/8)*2.0^-j) == 3/4
+            end 
+        end 
+
         # They are one-periodic.
-        x = 0.0:0.01:0.99
+        x = 0.:2.0^(-numberoffaberschauderlevelstested-3):1.0
         for y in x
             value = faberschauderone(y)
             for k in -10.0:10.0
@@ -299,6 +374,21 @@ sqrttwo = sqrt(2.0)
                 end
             end
         end
+
+        t = 0.:2.0^(-numberoffaberschauderlevelstested-3):1.0
+        # They have global minimum 0.0 and global maximum 1.0
+        @test abs(maximum(faberschauderone.(t)) - 1.0) < 10.0^-0.5
+        @test abs(minimum(faberschauderone.(t))) < 10.0^-0.5
+
+        for j in 0:numberoffaberschauderlevelstested
+            for k in 1:2^j
+                values = faberschauder(j,k).(t)
+                @test abs(minimum(values)) < 10.0^-5
+                @test abs(maximum(values)-1.0) < 10.0^-5
+            end
+        end
+
+
         # End of tests for mathematical properities of Faber-Schauder functions.
     end
 
