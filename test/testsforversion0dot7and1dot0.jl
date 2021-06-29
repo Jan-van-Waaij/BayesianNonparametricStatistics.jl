@@ -256,12 +256,22 @@ sqrttwo = sqrt(2.0)
         @test_throws AssertionError faberschauder(1, -2)
         @test_throws AssertionError faberschauder(1, 3)
 
+        for j in 0:numberoffaberschauderlevelstested
+            if j>0 
+                @test_throws AssertionError faberschauder(-j, 1)
+            end
+            @test_throws AssertionError faberschauder(j, 0)
+            @test_throws AssertionError faberschauder(j, -1)
+            @test_throws AssertionError faberschauder(j, 2^j + 1)
+            @test_throws AssertionError faberschauder(j, 2^j + 2)
+        end 
+
         # # Below we test Faber-Schauder functions on their mathematical properities, up
-        # # to level numberoffaberschauderlevelstested, defined below.
+        # # to level numberoffaberschauderlevelstested, defined above.
         t = 0.:2.0^(-numberoffaberschauderlevelstested-2):1.0
-        # They integrate to 2^(-j-1)
-        psionevalues = faberschauderone.(t[1:end-1])
-        @test abs(step(t)*sum(psionevalues)-2.0^-1) < 10.0^-3
+        
+        # Orthogonality tests
+
         # Faber-Schauder functions are level-wise orthogonal, for levels j≥1.
         for j in 1:numberoffaberschauderlevelstested
             for k in 1:2^j-1
@@ -272,10 +282,33 @@ sqrttwo = sqrt(2.0)
                 end
             end
         end
-        #
+
+        # ψ_{j,k} is independent with ψ_{j+r, 1},..., ψ_{j+r, (k-1)*2^r} and with
+        # ψ_{j+r, k*2^r+1},...,ψ_{j+r, 2^(j+r)}
+        for j in 1:numberoffaberschauderlevelstested
+            for k in 1:2^j
+                for r in 0:(numberoffaberschauderlevelstested-j)
+                    for ℓ in 1:(k-1)*2^r 
+                        psijkvalues = faberschauder(j,k).(t[1:end-1])
+                        psijplusrlvalues = faberschauder(j+r,ℓ).(t[1:end-1])
+                        @test abs(step(t)*sum(psijkvalues.*psijplusrlvalues))<10.0^-3
+                    end 
+                    for ℓ in k*2^r + 1:2^(j+r)
+                        psijkvalues = faberschauder(j,k).(t[1:end-1])
+                        psijplusrlvalues = faberschauder(j+r,ℓ).(t[1:end-1])
+                        @test abs(step(t)*sum(psijkvalues.*psijplusrlvalues))<10.0^-3
+                    end 
+                end 
+            end 
+        end 
+
+        # Integral 
+
+        t = 0.:2.0^(-numberoffaberschauderlevelstested-2):1.0
         # They integrate to 2^(-j-1)
         psionevalues = faberschauderone.(t[1:end-1])
         @test abs(step(t)*sum(psionevalues)-2.0^-1) < 10.0^-3
+        
         for j in 1:numberoffaberschauderlevelstested
             for k in 1:2^j
                 psijkvalues = faberschauder(j,k).(t[1:end-1])
@@ -283,27 +316,45 @@ sqrttwo = sqrt(2.0)
             end
         end
 
+        # Maxima and minima.
+
+        t = 0.:2.0^(-numberoffaberschauderlevelstested-3):1.0
+        # They have global minimum 0.0 and global maximum 1.0
+        @test maximum(faberschauderone.(t)) == 1.0
+        @test minimum(faberschauderone.(t)) == 0.0
+
         # psi_1 has maximum 1 at 0 and 1.
-        @test abs(faberschauderone(0.0)-1.0)<10.0^-5
-        @test abs(faberschauderone(1.0)-1.0)<10.0^-5
+        @test faberschauderone(0.0) == 1.0
+        @test faberschauderone(1.0) == 1.0
 
         # psi_1 has minimum 0 at 0.5.
-        @test abs(faberschauderone(0.5)) < 10.0^-5
+        @test faberschauderone(0.5) == 0.0
+
+        # Also ψ_{j,k} has global minimum 0 and global maximum 1.
+        for j in 0:numberoffaberschauderlevelstested
+            for k in 1:2^j
+                values = faberschauder(j,k).(t)
+                @test minimum(values) == 0.0
+                @test maximum(values) == 1.0
+            end
+        end
 
         # psi_{j,k} has maximum 1.0 at 2.0^(-j-1)+(k-1)*2.0^-j
         for j in 0:numberoffaberschauderlevelstested
             for k in 1:2^j
-                @test abs(faberschauder(j,k)(2.0^(-j-1)+(k-1)*2.0^-j)-1.0)<10.0^-5
+                @test faberschauder(j,k)(2.0^(-j-1)+(k-1)*2.0^-j) == 1.0
             end
         end
 
         #psi_{j,k} has minimum 0.0 at (k-1)*2.0^-j and k*2.0^-j
         for j in 0:numberoffaberschauderlevelstested
             for k in 1:2^j
-                @test abs(faberschauder(j,k)((k-1)*2.0^-j))<10.0^-5
-                @test abs(faberschauder(j,k)(k*2.0^-j))<10.0^-5
+                @test faberschauder(j,k)((k-1)*2.0^-j) == 0.0
+                @test faberschauder(j,k)(k*2.0^-j) == 0.0
             end
         end
+
+        # Values at certain places. 
 
         #psi_{j,k} are zero for 0.0≤x≤(k-1)*2.0^-j and k*2.0^-j ≤x≤1.0
         x = 0.:2.0^(-numberoffaberschauderlevelstested-3):1.0
@@ -353,13 +404,15 @@ sqrttwo = sqrt(2.0)
             end 
         end 
 
+        # Periodicity
+
         # They are one-periodic.
         x = 0.:2.0^(-numberoffaberschauderlevelstested-3):1.0
         for y in x
             value = faberschauderone(y)
             for k in -10.0:10.0
                 valuetwo = faberschauderone(y+k)
-                @test abs(value-valuetwo) < 10.0^-5
+                @test value == valuetwo
             end
         end
 
@@ -369,25 +422,11 @@ sqrttwo = sqrt(2.0)
                     value = faberschauder(j,k)(y)
                     for m in -10.:10.
                         valuetwo = faberschauder(j,k)(y+m)
-                        @test abs(value-valuetwo) < 10.0^-5
+                        @test value == valuetwo
                     end
                 end
             end
         end
-
-        t = 0.:2.0^(-numberoffaberschauderlevelstested-3):1.0
-        # They have global minimum 0.0 and global maximum 1.0
-        @test abs(maximum(faberschauderone.(t)) - 1.0) < 10.0^-0.5
-        @test abs(minimum(faberschauderone.(t))) < 10.0^-0.5
-
-        for j in 0:numberoffaberschauderlevelstested
-            for k in 1:2^j
-                values = faberschauder(j,k).(t)
-                @test abs(minimum(values)) < 10.0^-5
-                @test abs(maximum(values)-1.0) < 10.0^-5
-            end
-        end
-
 
         # End of tests for mathematical properities of Faber-Schauder functions.
     end
@@ -407,7 +446,7 @@ sqrttwo = sqrt(2.0)
         
         for k in 1:lengthvector
             X = rand(sde)
-            x[k] = X.samplevalues[end]
+            x[k] = X[end]
         end
 
         @test abs(StatsBase.mean(x)) < 0.1
