@@ -157,12 +157,15 @@ sqrttwo = sqrt(2.0)
 
     #Test functions are correct, complete and the same in both versions. 
     @testset "basisfunctions.jl" begin
-        @test_throws AssertionError fourier(-1)
-        @test_throws AssertionError fourier(-10)
-
         numberofbasisfunctionstested = 200
         numberoffaberschauderlevelstested = convert(Int64, round(log2(numberofbasisfunctionstested), RoundUp)) - 1
         numberoffourierfunctionstested = numberofbasisfunctionstested
+        
+        # Exceptions
+
+        @test_throws AssertionError fourier(-1)
+        @test_throws AssertionError fourier(-10)
+
         #The Fourier functions are orthogonal.
         t = 0.0:1/(4*ceil(numberoffourierfunctionstested/2)):1.0
         tprecise = 0.0:10.0^-1/(4*ceil(numberoffourierfunctionstested/2)):1.0
