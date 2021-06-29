@@ -16,13 +16,12 @@ y = fourier(3).(x)
 """
 function fourier(k::Int)
   k ≥ 0 || throw(AssertionError("k should be non-negative"))
-  sqrttwo = sqrt(2.0)
   if k == 0
     return x -> 1.0
   elseif isodd(k)
-    return x -> (y = mod(x, 1.0); sqrttwo * sinpi((k+1)*y))
+    return x -> sqrt(2.0) * sinpi((k+1)*y)
   else
-    return x -> (y = mod(x, 1.0); sqrttwo * cospi(k*y))
+    return x -> sqrt(2.0) * cospi(k*y)
   end
 end
 
