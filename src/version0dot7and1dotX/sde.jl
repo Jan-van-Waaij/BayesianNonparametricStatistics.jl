@@ -43,15 +43,16 @@ end
 SDE(model::SDEModel, b::Function) = SDE(b, model)
 
 """
-    calculatenextsamplevalue(prevXval, b, model::SDEModel{<:Number}, BMincrement)
-    calculatenextsamplevalue(prevXval, b, model, BMincrement)
+    calculatenextsamplevalue(prevXval, σ::Float64, b, Δ, BMincrement)
+    calculatenextsamplevalue(prevXval, σ, b, Δ, BMincrement)
+
 
 Internal function, not exported.
 
 Given the previous samplepath value prevXval, it calculates the next sample value with the Euler-Maruyama scheme. 
 """
-calculatenextsamplevalue(prevXval, b, model::SDEModel{<:Number}, BMincrement) = prevXval + b(prevXval)*model.Δ + model.σ*BMincrement
-calculatenextsamplevalue(prevXval, b, model, BMincrement) = prevXval + b(prevXval)*model.Δ + model.σ(prevXval)*BMincrement
+calculatenextsamplevalue(prevXval, σ::Float64, b, Δ, BMincrement) = prevXval + b(prevXval)*Δ + σ*BMincrement
+calculatenextsamplevalue(prevXval, σ, b, Δ, BMincrement) = prevXval + b(prevXval)*Δ + σ(prevXval)*BMincrement
 
 
 """
@@ -75,7 +76,7 @@ function rand(sde::SDE)
     samplevalues = Array{Float64}(undef, lengthoftimeinterval)
     prevXval = samplevalues[1] = sde.model.beginvalue
     for k in 2:lengthoftimeinterval
-        prevXval = samplevalues[k] = calculatenextsamplevalue(prevXval, sde.b, sde.model, BMincrements[k])
+        prevXval = samplevalues[k] = calculatenextsamplevalue(prevXval, sde.model.σ, sde.b, sde.model.Δ, BMincrements[k])
     end
     return SamplePath(timeinterval, samplevalues)
 end

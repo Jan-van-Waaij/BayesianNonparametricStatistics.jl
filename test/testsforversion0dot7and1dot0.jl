@@ -432,13 +432,31 @@ sqrttwo = sqrt(2.0)
         end
 
         # End of tests for mathematical properities of Faber-Schauder functions.
-    end
+    end # Perfect.
 
     #Test functions are correct, complete and the same in both versions. 
     @testset "SDE.jl" begin
         @test supertype(SDE) == AbstractSDE
 
         @test supertype(AbstractSDE) == Any
+
+        @test SDE in subtypes(AbstractSDE)
+
+        model = SDEModel(1.0, 0.0, 10.0, 0.001)
+        sde = SDE(sin, model)
+        @test sde.b == sin 
+        @test sde.model.beginvalue == 0.0
+        @test sde.model.σ == 1.0
+        @test sde.model.endtime = 10.0
+        @test sde.model.Δ == 0.001
+
+        model = SDEModel(abs, -2.0, 1098.0, 0.02)
+        sde = SDE(cos, model)
+        @test sde.b == cos 
+        @test sde.model.beginvalue == -2.0
+        @test sde.model.σ == abs 
+        @test sde.model.endtime = 1098.0
+        @test sde.model.Δ == 0.02
 
         # The following should represent a Brownian motion.
         model = SDEModel(1.0, 0.0, 1.0, 0.001)
@@ -505,13 +523,22 @@ sqrttwo = sqrt(2.0)
         @test X.timeinterval == 0.0:ornsteinuhlenbeckprocess.model.Δ:ornsteinuhlenbeckprocess.model.endtime
         @test length(X) == length(0.0:ornsteinuhlenbeckprocess.model.Δ:ornsteinuhlenbeckprocess.model.endtime)
 
-        model = SDEModel(1.0, 0.0, 10.0, 1.0)
+        f = BayesianNonparametricStatistics.calculatenextsamplevalue
+        σ = 1.0 
+        Δ = 1.0
         prevXval = 1.0
-        @test BayesianNonparametricStatistics.calculatenextsamplevalue(prevXval, identity, model, 1.0) == 3.0
+        b = identity
+        BMincrement = 1.0
+        @test f(prevXval, σ, b, Δ, BMincrement) == 3.0
 
-        model = SDEModel(identity, 0.0, 10.0, 1.0)
+        σ = 1.0 
+        Δ = 1.0
         prevXval = 1.0
-        @test BayesianNonparametricStatistics.calculatenextsamplevalue(prevXval, identity, model, 1.0) == 3.0
+        b = x->1.0
+        BMincrement = 1.0
+        @test f(prevXval, σ, b, Δ, BMincrement) == 3.0
+        
+
         # End tests "sde.jl".
     end
     
