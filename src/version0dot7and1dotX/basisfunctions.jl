@@ -19,9 +19,11 @@ function fourier(k::Int)
   if k == 0
     return x -> 1.0
   elseif isodd(k)
-    return x -> sqrt(2.0) * sinpi((k+1)*x)
+    kplusonefloat = float(k+1)
+    return x -> 1.4142135623730951 * sinpi(kplusonefloat*x)
   else
-    return x -> sqrt(2.0) * cospi(k*x)
+    kfloat = float(k)
+    return x -> 1.4142135623730951 * cospi(kfloat*x)
   end
 end
 
