@@ -447,7 +447,7 @@ sqrttwo = sqrt(2.0)
         @test sde.b == sin 
         @test sde.model.beginvalue == 0.0
         @test sde.model.σ == 1.0
-        @test sde.model.endtime = 10.0
+        @test sde.model.endtime == 10.0
         @test sde.model.Δ == 0.001
 
         model = SDEModel(abs, -2.0, 1098.0, 0.02)
@@ -455,7 +455,7 @@ sqrttwo = sqrt(2.0)
         @test sde.b == cos 
         @test sde.model.beginvalue == -2.0
         @test sde.model.σ == abs 
-        @test sde.model.endtime = 1098.0
+        @test sde.model.endtime == 1098.0
         @test sde.model.Δ == 0.02
 
         # The following should represent a Brownian motion.
@@ -538,9 +538,16 @@ sqrttwo = sqrt(2.0)
         BMincrement = 1.0
         @test f(prevXval, σ, b, Δ, BMincrement) == 3.0
         
+        σ = x -> 4.0 
+        Δ = 3.0
+        prevXval = 0.0
+        b = x->3.0
+        BMincrement = 4.0
+        @test f(prevXval, σ, b, Δ, BMincrement) == 5.0^2
+        
 
         # End tests "sde.jl".
-    end
+    end # Perfect
     
     #Test functions are correct, complete and the same in both versions.
     @testset "gaussianvectors.jl" begin
@@ -580,7 +587,7 @@ sqrttwo = sqrt(2.0)
         vempirical = StatsBase.var(nrandomdraws, dims = 1) 
         @test norm([1.0 2.0]-mempirical) < 0.1
         @test norm(vempirical-[1.0 4.0]) < 0.1
-    end
+    end # Skip
 
 
     #Test functions are correct, complete and the same in both versions. 
@@ -589,34 +596,28 @@ sqrttwo = sqrt(2.0)
 
         @test supertype(AbstractGaussianProcess) == Any
 
+        @test supertype(GaussianProcess) == AbstractGaussianProcess
+        @test supertype(FaberSchauderExpansionWithGaussianCoefficients) == AbstractGaussianProcess
 
-        d_distributions = MvNormal([1.0,2.0, 3.0, 4.0])
+        # Tests for GaussianProcess
 
-        @test_throws DimensionMismatch GaussianProcess([fourier(k) for k in 1:2], GaussianVector(sparse(Diagonal([1.0,1.0,1.0]))))
+        d = MvNormal([1.0,2.0, 3.0, 4.0])
 
-        @test_throws DimensionMismatch GaussianProcess([fourier(k) for k in 1:2], d_distributions)
+        @test_throws DimensionMismatch GaussianProcess([fourier(k) for k in 1:2], d)
 
-        @test_throws DimensionMismatch GaussianProcess([fourier(k) for k in 1:4], GaussianVector(sparse(Diagonal([1.0,1.0,1.0]))))
+        @test_throws DimensionMismatch GaussianProcess([fourier(k) for k in 1:5], d)
 
-        @test_throws DimensionMismatch GaussianProcess([fourier(k) for k in 1:5], d_distributions)
-
-        X = GaussianProcess([sinpi, cospi], GaussianVector(sparse(Diagonal([1.0, 1.0]))))
-
-        X_distributions = GaussianProcess([sinpi, cospi], MvNormal([1.0, 2.0]))
+        X = GaussianProcess([sinpi, cospi], MvNormal([1.0, 2.0]))
         
         @test X.basis == [sinpi, cospi]
-        @test X_distributions.basis == [sinpi, cospi]
-        @test typeof(X.distribution) <: GaussianVector
-        @test typeof(X_distributions.distribution) <: AbstractMvNormal
-        @test X.distribution.Σ == [1.0 0.0; 0.0 1.0]
-        @test cov(X_distributions.distribution) == [1.0 0.0; 0.0 4.0]
+        @test typeof(X.distribution) <: AbstractMvNormal
+        @test cov(X.distribution) == [1.0 0.0; 0.0 4.0]
         @test mean(X.distribution) == [0.0,0.0]
-        @test mean(X_distributions.distribution) == [0.0, 0.0] 
         @test length(X) == 2
-        @test length(X_distributions) == 2 
+        @test length(X) == 2 
         @test typeof(rand(X)) <: Function     
-        @test typeof(rand(X_distributions)) <: Function
         
+        X = GaussianProcess([sinpi, cospi], MvNormal([1.0,1.0]))
         n = 100000
         a = sinpi(1/4)
         x = Vector{Float64}(undef, n) 
@@ -628,33 +629,8 @@ sqrttwo = sqrt(2.0)
         @test abs(StatsBase.mean(x))<0.01
         @test abs(StatsBase.var(x)-2*a^2)<0.1
 
-        X_distributions = GaussianProcess([sinpi, cospi], MvNormal([1.0,1.0]))
-        n = 100000
-        a = sinpi(1/4)
-        x = Vector{Float64}(undef, n) 
-        for k in 1:n
-            f = rand(X_distributions)
-            x[k] = f(1/4)
-        end
 
-        @test abs(StatsBase.mean(x))<0.01
-        @test abs(StatsBase.var(x)-2*a^2)<0.1
-
-        x = 0.0:0.1:1.0
-        y = BayesianNonparametricStatistics.sumoffunctions([sin, cos], [1., 1.]).(x)
-        z = map(x-> sin(x)+cos(x), x)
-        @test y ≈ z
-
-        A = sparse(Diagonal([1.0, 1.0]))
-
-        distribution = GaussianVector(A)
-
-        @test_throws AssertionError FaberSchauderExpansionWithGaussianCoefficients(1,distribution)
-
-        @test_throws AssertionError FaberSchauderExpansionWithGaussianCoefficients(Vector{Float64}(undef, 0))
-
-        Π = FaberSchauderExpansionWithGaussianCoefficients(0,distribution)
-        @test length(Π) == 2
+        # Tests for calculateboundssupport
 
         f = BayesianNonparametricStatistics.calculateboundssupport
 
@@ -675,21 +651,54 @@ sqrttwo = sqrt(2.0)
             end 
         end 
 
+        # Tests for createFaberSchauderBasisUpToLevelHigestLevel
+
         f = BayesianNonparametricStatistics.createFaberSchauderBasisUpToLevelHigestLevel
 
-        for i in 1:10 
+        numberoflevelstested=10
+        for i in 1:numberoflevelstested 
             v = f(i)
             vnext = f(i+1)
             @test length(v) == 2^(i+1)
             @test v[1] == faberschauderone
             @test vnext[1:length(v)] == v 
             @test length(unique(v)) == length(v)
+            # the elements are callable. 
             @test try [item(0.5) for item in v]
                 true
             catch
                 false
             end
-        end 
+            grid = 0.0:2.0^(-numberoflevelstested-3):1.0
+            @test v[1].(grid) == faberschauderone.(grid)
+            index = 2
+            for j in 0:i  
+                for k in 1:2^j 
+                    @test v[index].(grid) == faberschauder(j,k).(grid)
+                    index += 1
+                end 
+            end 
+        end
+
+        # Tests for FaberSchauderExpansionWithGaussianCoefficients type
+
+        # HIER VERDER!!!
+
+        x = 0.0:0.1:1.0
+        y = BayesianNonparametricStatistics.sumoffunctions([sin, cos], [1., 1.]).(x)
+        z = map(x-> sin(x)+cos(x), x)
+        @test y ≈ z
+
+        A = sparse(Diagonal([1.0, 1.0]))
+
+        distribution = GaussianVector(A)
+
+        @test_throws AssertionError FaberSchauderExpansionWithGaussianCoefficients(1,distribution)
+
+        @test_throws AssertionError FaberSchauderExpansionWithGaussianCoefficients(Vector{Float64}(undef, 0))
+
+        Π = FaberSchauderExpansionWithGaussianCoefficients(0,distribution)
+        @test length(Π) == 2
 
         f = BayesianNonparametricStatistics.createvectorofstandarddeviationsfromstandarddeviationsperlevel
 
